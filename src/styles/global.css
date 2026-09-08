@@ -7,4 +7,41 @@
   /* Tipografía */
   --font-sans: "Plus Jakarta Sans Variable", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Space Grotesk Variable", ui-sans-serif, system-ui, sans-serif;
+
+  /* Marca */
+  --color-matrifer-cyan: #01C1F2;
+  --color-matrifer-cyan-light: #00D2FF;
+  --color-matrifer-blue: #407EEF;
+  --color-matrifer-blue-deep: #2563EB;
+  --color-matrifer-indigo: #4426BC;
+  --color-matrifer-indigo-dark: #371B96;
+
+  /* Gradientes */
+  --background-image-matrifer-gradient: linear-gradient(135deg, #00D2FF 0%, #3B7BF6 50%, #4F28C8 100%);
+  --background-image-matrifer-cta: linear-gradient(90deg, #00B4F0 0%, #2563EB 100%);
+  --background-image-matrifer-glow: radial-gradient(circle, rgba(0, 180, 240, 0.25) 0%, rgba(59, 123, 246, 0.05) 70%, transparent 100%);
+
+  /* Acentos */
+  --color-industrial-yellow: #EAB308;
+  --color-industrial-bright: #FACC15;
+
+  /* Fondos */
+  --color-void-base: #020611;
+  --color-void-alt: #050B14;
+  --color-void-surface: #08101E;
+  --color-void-raised: #0B1528;
+  --color-void-elevated: #0F1C34;
+  --color-void-footer: #030712;
+
+  /* Texto */
+  --color-content-primary: #FFFFFF;
+  --color-content-secondary: #94A3B8;
+  --color-content-muted: #64748B;
+  --color-content-dim: #475569;
+
+  /* Bordes */
+  --color-stroke-subtle: rgba(255, 255, 255, 0.10);
+  --color-stroke-medium: rgba(255, 255, 255, 0.18);
+  --color-stroke-brand: rgba(0, 180, 240, 0.30);
+  --color-stroke-divider: #1E293B;
 }

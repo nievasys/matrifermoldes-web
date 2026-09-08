@@ -1,0 +1,44 @@
+---
+const whatsappNumber = "5491154200297";
+const defaultMessage =
+  "Hola! Vi la página web de Matrifer Moldes y quería consultar por los servicios de inyección de plásticos.";
+
+const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(defaultMessage)}`;
+
+import triangulo from '@/assets/triangulomatrifer.svg?raw';
+---
+
+<section
+  data-hero
+  class="relative w-full overflow-hidden bg-void-base"
+  aria-label="Presentación de Matrifer Moldes"
+>
+  <picture class="absolute inset-0 z-0" aria-hidden="true">
+    <source type="image/webp" srcset="/hero_image.webp" />
+    <img
+      data-hero-image
+      src="/hero_image.webp"
+      alt=""
+      role="presentation"
+      class="h-full w-full object-cover object-center"
+      fetchpriority="high"
+      decoding="async"
+    />
+  </picture>
+
+  <header
+    class="relative z-10 flex min-h-screen w-full flex-col items-start justify-end px-4 pb-10 pt-16 text-left sm:px-6 lg:px-8 lg:pb-14"
+  >
+    <div data-hero-copy class="flex max-w-4xl flex-col items-start">
+      <span class="flex items-center gap-2 font-sans text-s font-bold uppercase tracking-wide text-content-secondary">
+        <span aria-hidden="true" class="text-matrifer-cyan [&_svg]:h-4 [&_svg]:w-4 [&_svg]:shrink-0" set:html={triangulo}></span>
+        MATRIFER MOLDES
+      </span>
+      <h1
+        class="text-balance font-medium font-sans text-3xl tracking-wider text-white sm:text-5xl lg:text-7xl"
+      >
+        Servicio de inyección de termoplásticos en Moreno.
+      </h1>
+    </div>
+  </header>
+</section>
