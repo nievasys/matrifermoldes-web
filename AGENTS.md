@@ -8,6 +8,10 @@ astro dev --background
 
 Manage the background server with `astro dev stop`, `astro dev status`, and `astro dev logs`.
 
+## Contributing
+
+Follow the conventions in [CONTRIBUTING.md](CONTRIBUTING.md): atomic commits, Conventional Commits in Spanish (`feat:`, `fix:`, `chore:`, `style:`, `docs:`, `refactor:`), work on `main`, and run `npm run build` before committing.
+
 ## Documentation
 
 Full documentation: https://docs.astro.build
