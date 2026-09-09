@@ -1,0 +1,47 @@
+---
+// Imagen de capacidad industrial. Reemplazar con imagen propia.
+const capabilityImage = "/hero_image.webp";
+import SectionBadge from "@/components/SectionBadge.astro";
+---
+
+<section
+  class="relative border-t border-stroke-subtle bg-void-base pb-20 pt-24"
+  id="about"
+  aria-label="Sobre Matrifer Moldes"
+>
+  <div class="mx-auto w-full max-w-[1720px] px-6 lg:px-12">
+    <!-- Tag y declaración principal -->
+    <div class="mb-12 max-w-4xl">
+      <div class="mb-4">
+        <SectionBadge label="CAPACIDAD INDUSTRIAL Y TECNOLOGÍA" />
+      </div>
+      <p
+        class="font-sans text-2xl font-light leading-relaxed text-white sm:text-3xl lg:text-[34px]"
+      >
+        Más de 30 años de trayectoria en el rubro nos definen, marcada
+        experiencia y equipo/herramientas de trabajo profesional.{" "}
+        <span class="text-content-secondary">
+          Personal capacitado y especializado en dichas tareas.
+        </span>
+      </p>
+    </div>
+
+    <!-- Panel tecnológico 3D -->
+    <div
+      class="group relative w-full overflow-hidden rounded-xl border border-stroke-brand bg-void-surface shadow-2xl"
+    >
+      <img
+        src={capabilityImage}
+        alt="Panel de capacidad industrial y telemetría de Matrifer Moldes"
+        class="h-auto w-full object-cover transition-transform duration-700 group-hover:scale-[1.01]"
+        loading="lazy"
+        decoding="async"
+      />
+      <div
+        class="pointer-events-none absolute inset-0 bg-gradient-to-t from-void-base/70 via-transparent to-transparent"
+        aria-hidden="true"
+      >
+      </div>
+    </div>
+  </div>
+</section>

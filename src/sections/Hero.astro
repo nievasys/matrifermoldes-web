@@ -1,44 +1,91 @@
 ---
-const whatsappNumber = "5491154200297";
-const defaultMessage =
-  "Hola! Vi la página web de Matrifer Moldes y quería consultar por los servicios de inyección de plásticos.";
-
-const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(defaultMessage)}`;
-
-import triangulo from '@/assets/triangulomatrifer.svg?raw';
+// Imagen de fondo del hero. Reemplazar por la imagen definitiva cuando esté disponible.
+const heroImage = "/hero_image.webp";
+import SectionBadge from "@/components/SectionBadge.astro";
 ---
 
 <section
-  data-hero
-  class="relative w-full overflow-hidden bg-void-base"
+  class="relative flex min-h-screen flex-col justify-between overflow-hidden bg-void-base pb-12 pt-36"
   aria-label="Presentación de Matrifer Moldes"
 >
-  <picture class="absolute inset-0 z-0" aria-hidden="true">
-    <source type="image/webp" srcset="/hero_image.webp" />
+  <!-- Fondo cinematográfico -->
+  <div class="absolute inset-0 z-0 bg-black" aria-hidden="true">
     <img
-      data-hero-image
-      src="/hero_image.webp"
+      src={heroImage}
       alt=""
       role="presentation"
       class="h-full w-full object-cover object-center"
       fetchpriority="high"
       decoding="async"
     />
-  </picture>
+    <div
+      class="absolute inset-0 bg-gradient-to-t from-void-base via-transparent to-black/50"
+    >
+    </div>
+    <div
+      class="absolute inset-0 bg-gradient-to-r from-void-base/85 via-transparent to-void-base/60"
+    >
+    </div>
+  </div>
 
-  <header
-    class="relative z-10 flex min-h-screen w-full flex-col items-start justify-end px-4 pb-10 pt-16 text-left sm:px-6 lg:px-8 lg:pb-14"
-  >
-    <div data-hero-copy class="flex max-w-4xl flex-col items-start">
-      <span class="flex items-center gap-2 font-sans text-s font-bold uppercase tracking-wide text-content-secondary">
-        <span aria-hidden="true" class="text-matrifer-cyan [&_svg]:h-4 [&_svg]:w-4 [&_svg]:shrink-0" set:html={triangulo}></span>
-        MATRIFER MOLDES
-      </span>
+  <!-- Espaciador central -->
+  <div class="flex-grow" aria-hidden="true"></div>
+
+  <!-- Contenido principal -->
+  <div class="relative z-10 mx-auto mb-6 w-full max-w-[1720px] px-6 lg:px-12">
+    <div class="max-w-4xl">
+      <!-- Badge de categoría -->
+      <div class="mb-6">
+        <SectionBadge label="MATRIFER MOLDES" />
+      </div>
+
+      <!-- Titular -->
       <h1
-        class="text-balance font-medium font-sans text-3xl tracking-wider text-white sm:text-5xl lg:text-7xl"
+        class="mb-10 max-w-3xl font-display text-4xl font-semibold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-[68px]"
       >
-        Servicio de inyección de termoplásticos en Moreno.
+        Servicio de inyección de termoplásticos y matricería en Moreno.
       </h1>
     </div>
-  </header>
+
+    <!-- Barra de controles inferior -->
+    <div
+      class="mt-6 flex items-center justify-between border-t border-stroke-subtle pt-6"
+    >
+      <!-- Indicador de scroll -->
+      <a
+        href="#about"
+        class="inline-flex items-center gap-2.5 rounded-full border border-stroke-subtle bg-white/[0.08] px-4 py-2 font-sans text-xs tracking-wider text-content-secondary backdrop-blur-md transition-colors hover:bg-white/[0.15]"
+      >
+        <span>Desplázate para ver más</span>
+        <svg
+          class="h-3 w-3 animate-bounce text-content-secondary"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path
+            d="M19 14l-7 7m0 0l-7-7m7 7V3"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"></path>
+        </svg>
+      </a>
+
+      <!-- Botón de control multimedia -->
+      <button
+        type="button"
+        aria-label="Pausar bucle multimedia"
+        class="flex h-10 w-10 items-center justify-center rounded-full border border-stroke-medium bg-black/20 text-white/80 backdrop-blur-sm transition-all hover:border-white hover:text-white"
+      >
+        <svg
+          class="h-3.5 w-3.5 fill-current"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
 </section>

@@ -45,3 +45,50 @@
   --color-stroke-brand: rgba(0, 180, 240, 0.30);
   --color-stroke-divider: #1E293B;
 }
+
+/* Scrollbars refinados */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #030812;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Elementos de vidrio esmerilado */
+.glass-card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.glass-banner {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+}
+.glass-panel {
+  border-radius: 34px;
+  background: linear-gradient(0deg, rgba(191, 191, 191, 0.6), rgba(191, 191, 191, 0.6)),
+    rgba(255, 255, 255, 0.75);
+  background-blend-mode: darken, lighten;
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  box-shadow: 1.25px 0px 0px -0.75px #dbdbdb, -1.25px 0px 0px -0.75px #dbdbdb,
+    0px 0px 0px 0.5px #dbdbdb, 0px 18px 48px rgba(0, 0, 0, 0.25),
+    inset 0px 40px 10px -40px #282828, inset 0px -40px 10px -40px #282828;
+}
