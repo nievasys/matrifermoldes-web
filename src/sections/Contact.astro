@@ -4,10 +4,6 @@ const defaultMessage =
   "Hola! Vi la página web de Matrifer Moldes y quería consultar por los servicios de inyección de plásticos.";
 
 const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(defaultMessage)}`;
-
-// TODO: reemplazar por la foto original (Ambre Esteve - 6-iunIrJtbQ) cuando se consiga el CDN. Por ahora usa stock verificado.
-const contactImage =
-  "https://images.unsplash.com/photo-1549924231-f129b911e442?auto=format&fit=crop&w=1280&q=60";
 ---
 
 <section class="relative bg-void-footer py-16" id="contacto" aria-label="Contacto">
@@ -16,7 +12,7 @@ const contactImage =
       class="relative min-h-[520px] w-full overflow-hidden rounded-[34px] shadow-2xl lg:aspect-[1280/509] lg:min-h-0"
     >
       <img
-        src={contactImage}
+        src="contact.webp"
         alt=""
         class="absolute inset-0 h-full w-full object-cover"
         loading="lazy"

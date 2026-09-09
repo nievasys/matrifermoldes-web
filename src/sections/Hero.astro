@@ -2,6 +2,11 @@
 // Imagen de fondo del hero. Reemplazar por la imagen definitiva cuando esté disponible.
 const heroImage = "/hero_image.webp";
 import SectionBadge from "@/components/SectionBadge.astro";
+
+const whatsappNumber = "5491154200297";
+const defaultMessage =
+  "Hola! Vi la página web de Matrifer Moldes y quería consultar por los servicios de inyección de plásticos.";
+const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(defaultMessage)}`;
 ---
 
 <section
@@ -45,47 +50,29 @@ import SectionBadge from "@/components/SectionBadge.astro";
       >
         Servicio de inyección de termoplásticos y matricería en Moreno.
       </h1>
-    </div>
 
-    <!-- Barra de controles inferior -->
-    <div
-      class="mt-6 flex items-center justify-between border-t border-stroke-subtle pt-6"
-    >
-      <!-- Indicador de scroll -->
+      <!-- CTA de WhatsApp -->
       <a
-        href="#about"
-        class="inline-flex items-center gap-2.5 rounded-full border border-stroke-subtle bg-white/[0.08] px-4 py-2 font-sans text-xs tracking-wider text-content-secondary backdrop-blur-md transition-colors hover:bg-white/[0.15]"
+        href={whatsappUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="mb-10 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-matrifer-cyan-light via-matrifer-blue to-matrifer-indigo px-7 py-3.5 font-sans text-xs font-semibold uppercase tracking-wider text-white shadow-lg shadow-cyan-500/20 transition-all duration-200 hover:opacity-95"
       >
-        <span>Desplázate para ver más</span>
+        Solicitar presupuesto
         <svg
-          class="h-3 w-3 animate-bounce text-content-secondary"
+          class="h-3.5 w-3.5"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
           aria-hidden="true"
         >
           <path
-            d="M19 14l-7 7m0 0l-7-7m7 7V3"
+            d="M9 5l7 7-7 7"
             stroke-linecap="round"
             stroke-linejoin="round"
             stroke-width="2"></path>
         </svg>
       </a>
-
-      <!-- Botón de control multimedia -->
-      <button
-        type="button"
-        aria-label="Pausar bucle multimedia"
-        class="flex h-10 w-10 items-center justify-center rounded-full border border-stroke-medium bg-black/20 text-white/80 backdrop-blur-sm transition-all hover:border-white hover:text-white"
-      >
-        <svg
-          class="h-3.5 w-3.5 fill-current"
-          viewBox="0 0 24 24"
-          aria-hidden="true"
-        >
-          <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path>
-        </svg>
-      </button>
     </div>
   </div>
 </section>

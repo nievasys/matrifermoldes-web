@@ -1,38 +1,34 @@
 ---
 import SectionBadge from '@/components/SectionBadge.astro';
 
-// Imágenes de stock provisorias. Reemplazar la URL de cada servicio por las fotos reales.
-const img = (id: string) =>
-  `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=900&q=60`;
-
 const servicios = [
   {
     title: "Inyección",
-    image: img("1581093450021-4a7360e9a6b5"),
+    image: "inyeccion.webp",
     description:
-      "Procesos de inyección de termoplásticos con alta precisión, tolerancias rigurosas y acabados perfectos para piezas de demanda industrial exigente.",
+      "Nos dedicamos principalmente a la inyección de termoplásticos para terceros con máquinas inyectoras desde 50 TN hasta 800 TN.",
   },
   {
     title: "Matricería",
-    image: img("1581092335397-9583eb92d232"),
+    image: "matriceria.webp",
     description:
-      "Además realizamos trabajos de matricería para la creación de moldes desde el diseño hasta el producto final y asesoramiento personalizado de cavidades en los moldes para un mayor rendimiento en su producción. Los moldes son construidos en acero con el alojamiento para determinada cantidad de piezas de plástico inyectado.",
+      "Realizamos trabajos de matricería para la creación de moldes desde el diseño hasta el producto final y asesoramiento personalizado de cavidades en los moldes para un mayor rendimiento en su producción. Los moldes son construidos en acero con el alojamiento para determinada cantidad de piezas de plástico inyectado.",
   },
   {
     title: "CNC",
-    image: img("1581092160562-40aa08e78837"),
+    image: "cnc.webp",
     description:
       "Maquinaria de control numérico para mecanizado de alta velocidad y precisión, garantizando la dimensionalidad exacta de cada componente.",
   },
   {
     title: "Diseño CAD/CAM",
-    image: img("1519389950473-47ba0277781c"),
+    image: "cad.webp",
     description:
       "Contamos con un departamento de diseño y programación para un producto nuevo o el que necesita el cliente brindándole asesoramiento por la cantidad de cavidades para lograr la mayor eficiencia.",
   },
   {
     title: "Electroerosión",
-    image: img("1581092918056-0c4c3acd3789"),
+    image: "electroerosion.webp",
     description:
       "Ofrecemos servicios de rectificado en máquina tangencial y electroerosión por penetración hasta 50 A.",
   },

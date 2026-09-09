@@ -17,10 +17,6 @@ const pilares = [
     texto: "Probados bajo presión de alto rendimiento",
   },
 ];
-
-// Imagen de banner industrial. Reemplazar con imagen propia.
-const factoryImage =
-  "https://images.unsplash.com/photo-1516937941344-00b4e0337589?auto=format&fit=crop&w=1600&q=60";
 ---
 
 <section class="border-t border-stroke-subtle bg-void-base pt-20" aria-label="Por qué trabajar con nosotros">
@@ -52,14 +48,14 @@ const factoryImage =
   <!-- Banner con cita -->
   <div class="relative w-full overflow-hidden border-y border-stroke-subtle">
     <img
-      src={factoryImage}
+      src="/whyus_image.webp"
       alt="Planta industrial de Matrifer Moldes"
-      class="h-auto min-h-[420px] w-full object-cover"
+      class="h-[280px] w-full object-cover sm:h-[320px] lg:h-[360px]"
       loading="lazy"
       decoding="async"
     />
     <div class="absolute inset-0 bg-void-base/80"></div>
-    <div class="absolute inset-0 flex items-center justify-center px-6 py-24 sm:px-12">
+    <div class="absolute inset-0 flex items-center justify-center px-6 py-10 sm:px-12 sm:py-14">
       <div class="max-w-4xl text-center">
         <span
           class="mb-6 inline-block font-sans text-xs font-semibold uppercase tracking-[0.2em] text-matrifer-cyan"

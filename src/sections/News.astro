@@ -6,19 +6,19 @@ const img = (id: string) =>
 const noticias = [
   {
     categoria: "NOTICIAS — 3 MIN LECTURA",
-    image: img("1581093588401-fbb62a02f120"),
+    image: "noticiasillas.webp",
     titulo:
-      "Matrifer Moldes incorpora nueva tecnología de inyección para mejorar la precisión de sus piezas.",
+      "Estamos muy contentos de estar trabajado en este nuevo proyecto: Molde de diseño innovador de sillas plásticas.",
   },
   {
     categoria: "INFORMES — 2 MIN LECTURA",
-    image: img("1504384308090-c894fdcc538d"),
-    titulo: "Datos en tiempo real: de la información a la acción en tu producción.",
+    image: "noticiamudanza.webp",
+    titulo: "Nos mudamos! Abrimos una nueva planta de procesos de inyección y matriceria en Moreno.",
   },
   {
     categoria: "INFORMES — 2 MIN LECTURA",
-    image: img("1550751827-4bd374c3f58b"),
-    titulo: "El rol del diseño CAD/CAM en la ingeniería moderna de moldes.",
+    image: "noticiaborche.webp",
+    titulo: "Nuestra moderna e innovadora máquina de inyección BS800-III con motores servo de última generación.  ",
   },
 ];
 ---
@@ -70,12 +70,12 @@ const noticias = [
             />
           </div>
           <div
-            class="font-display text-[11px] font-semibold uppercase tracking-widest text-matrifer-cyan"
+            class="font-display text-[11px] font-semibold uppercase tracking-widest text-content-secondary"
           >
             {noticia.categoria}
           </div>
           <h3
-            class="font-display text-lg font-medium leading-snug text-white transition-colors group-hover:text-matrifer-blue"
+            class="font-sans text-lg font-normal leading-snug text-white transition-colors group-hover:text-matrifer-blue"
           >
             {noticia.titulo}
           </h3>
