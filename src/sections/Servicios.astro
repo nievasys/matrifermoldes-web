@@ -56,8 +56,8 @@ const servicios = [
 
     <!-- Grid de tarjetas de servicio -->
     <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-      {servicios.map((servicio) => (
-        <div class="group cursor-pointer space-y-3">
+      {servicios.map((servicio, index) => (
+        <div class="group reveal cursor-pointer space-y-3" style={`--d:${index}`}>
           <div class="overflow-hidden rounded-xl border border-stroke-subtle bg-void-surface">
             <img
               src={servicio.image}

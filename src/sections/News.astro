@@ -5,18 +5,18 @@ const img = (id: string) =>
 
 const noticias = [
   {
-    categoria: "NOTICIAS — 3 MIN LECTURA",
+    categoria: "NOTICIAS · 3 MIN LECTURA",
     image: "noticiasillas.webp",
     titulo:
-      "Estamos muy contentos de estar trabajado en este nuevo proyecto: Molde de diseño innovador de sillas plásticas.",
+      "Estamos muy contentos de estar trabajando en este nuevo proyecto: Molde de diseño innovador de sillas plásticas.",
   },
   {
-    categoria: "INFORMES — 2 MIN LECTURA",
+    categoria: "INFORMES · 2 MIN LECTURA",
     image: "noticiamudanza.webp",
     titulo: "Nos mudamos! Abrimos una nueva planta de procesos de inyección y matriceria en Moreno.",
   },
   {
-    categoria: "INFORMES — 2 MIN LECTURA",
+    categoria: "INFORMES · 2 MIN LECTURA",
     image: "noticiaborche.webp",
     titulo: "Nuestra moderna e innovadora máquina de inyección BS800-III con motores servo de última generación.  ",
   },
@@ -39,27 +39,14 @@ const noticias = [
         class="flex items-center gap-1 font-sans text-xs font-medium uppercase tracking-wider text-content-secondary transition-colors hover:text-matrifer-cyan-light"
       >
         <span>Ver todo</span>
-        <svg
-          class="h-3.5 w-3.5"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          aria-hidden="true"
-        >
-          <path
-            d="M9 5l7 7-7 7"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-          ></path>
-        </svg>
+        <i class="ph ph-arrow-right text-xs" aria-hidden="true"></i>
       </a>
     </div>
 
     <!-- Tarjetas de contenido -->
     <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
-      {noticias.map((noticia) => (
-        <article class="group cursor-pointer space-y-3">
+      {noticias.map((noticia, index) => (
+        <article class="group reveal cursor-pointer space-y-3" style={`--d:${index}`}>
           <div class="overflow-hidden rounded-xl border border-stroke-subtle bg-void-surface">
             <img
               src={noticia.image}
@@ -75,7 +62,7 @@ const noticias = [
             {noticia.categoria}
           </div>
           <h3
-            class="font-sans text-lg font-normal leading-snug text-white transition-colors group-hover:text-matrifer-blue"
+            class="font-sans text-lg font-normal leading-snug text-white transition-colors group-hover:text-matrifer-cyan-light"
           >
             {noticia.titulo}
           </h3>

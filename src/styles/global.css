@@ -21,10 +21,6 @@
   --background-image-matrifer-cta: linear-gradient(90deg, #00B4F0 0%, #2563EB 100%);
   --background-image-matrifer-glow: radial-gradient(circle, rgba(0, 180, 240, 0.25) 0%, rgba(59, 123, 246, 0.05) 70%, transparent 100%);
 
-  /* Acentos */
-  --color-industrial-yellow: #EAB308;
-  --color-industrial-bright: #FACC15;
-
   /* Fondos */
   --color-void-base: #020611;
   --color-void-alt: #050B14;
@@ -37,7 +33,6 @@
   --color-content-primary: #FFFFFF;
   --color-content-secondary: #94A3B8;
   --color-content-muted: #64748B;
-  --color-content-dim: #475569;
 
   /* Bordes */
   --color-stroke-subtle: rgba(255, 255, 255, 0.10);
@@ -69,18 +64,28 @@
   scrollbar-width: none;
 }
 
+/* Scroll-reveal: solo cuando hay JS y movimiento permitido */
+.js .reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: calc(var(--d, 0) * 90ms);
+}
+.js .reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .js .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
 /* Elementos de vidrio esmerilado */
-.glass-card {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-.glass-banner {
-  background: rgba(255, 255, 255, 0.72);
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
-}
 .glass-panel {
   border-radius: 34px;
   background: linear-gradient(0deg, rgba(191, 191, 191, 0.6), rgba(191, 191, 191, 0.6)),
