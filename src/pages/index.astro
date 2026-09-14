@@ -13,6 +13,35 @@ import Footer from '@/sections/Footer.astro';
 ---
 
 <Layout title={title} description={description}>
+	<script
+		type="application/ld+json"
+		set:html={JSON.stringify({
+			"@context": "https://schema.org",
+			"@type": "LocalBusiness",
+			name: "Matrifer Moldes",
+			description,
+			url: "/",
+			image: "/logo.svg",
+			telephone: "+54 9 11 5420-0297",
+			address: {
+				"@type": "PostalAddress",
+				addressLocality: "Moreno",
+				addressRegion: "Buenos Aires",
+				addressCountry: "AR"
+			},
+			serviceType: [
+				"Inyección de termoplásticos",
+				"Matricería",
+				"Mecanizado CNC",
+				"Diseño CAD/CAM",
+				"Electroerosión"
+			],
+			sameAs: [
+				"https://www.tiktok.com/@matrifermoldes",
+				"https://www.instagram.com/matrifermoldes"
+			]
+		})}
+	/>
 	<Header />
 	<Hero />
 	<About />
