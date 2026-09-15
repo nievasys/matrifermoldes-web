@@ -54,6 +54,30 @@ const { title, description } = Astro.props
 				reveal.forEach((el) => io.observe(el));
 			}
 		</script>
+	<script>
+			document.addEventListener("click", (event) => {
+				const target = event.target as Element | null;
+				const anchor = target?.closest?.('a[href^="#"]');
+				if (!anchor) return;
+				const selector = anchor.getAttribute("href");
+				if (!selector || selector === "#") return;
+				const section = document.querySelector(selector);
+				if (!section) return;
+				event.preventDefault();
+				const offset = 96;
+				const top = section.getBoundingClientRect().top + window.scrollY - offset;
+				const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+				if (reduce.matches) {
+					window.scrollTo(0, top);
+				} else {
+					window.scrollTo({ top, behavior: "smooth" });
+				}
+				const menu = document.getElementById("mobile-menu");
+				if (menu && !menu.classList.contains("hidden")) {
+					document.getElementById("menu-toggle")?.click();
+				}
+			});
+		</script>
 	</body>
 </html>
 

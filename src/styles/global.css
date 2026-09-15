@@ -85,6 +85,15 @@
   }
 }
 
+html {
+  scroll-padding-top: 6rem;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
 /* Elementos de vidrio esmerilado */
 .glass-panel {
   border-radius: 20px;
