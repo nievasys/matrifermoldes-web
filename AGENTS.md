@@ -44,7 +44,7 @@ Do not invent new tokens. Use the existing system:
 - **CTA backgrounds:** gradient `from-matrifer-blue-deep (#2563EB)` → `to-matrifer-indigo (#4426BC)` so white text passes WCAG AA. Never put white text on cyan (fails contrast).
 - **Palette:** dark-only "void" family `#020611` → `#030712` (footer). Dark-only is the brand identity. Do not add light sections.
 - **Type:** Space Grotesk for display, Plus Jakarta Sans for body. No font swaps.
-- **Radius signature (mixed, documented):** pill CTAs, 12px cards (`rounded-xl`), 34px hero glass panel, 10px contact CTA.
+- **Radius system (documented, "Precision"):** 12px for all surfaces and CTAs (`rounded-xl`), 20px for the signature glass panel. Max radius 20px site-wide. No pill radii.
 - **Motion:** scroll-reveal only via the `.reveal` / `.is-visible` system in `global.css`, driven by the IntersectionObserver in `Layout.astro`, gated by `prefers-reduced-motion` and the `.js` class. Animate only `transform` and `opacity`. Never `window.addEventListener("scroll")`.
 
 ## Design rules (required)

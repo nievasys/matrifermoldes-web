@@ -87,7 +87,7 @@
 
 /* Elementos de vidrio esmerilado */
 .glass-panel {
-  border-radius: 34px;
+  border-radius: 20px;
   background: linear-gradient(0deg, rgba(191, 191, 191, 0.6), rgba(191, 191, 191, 0.6)),
     rgba(255, 255, 255, 0.75);
   background-blend-mode: darken, lighten;
