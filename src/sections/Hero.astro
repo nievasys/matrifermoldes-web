@@ -1,5 +1,5 @@
 ---
-// Imagen de fondo del hero. Reemplazar por la imagen definitiva cuando esté disponible.
+// Fondo del hero: video en loop con poster/imagen estática de respaldo.
 const heroImage = "/hero_image.webp";
 import SectionBadge from "@/components/SectionBadge.astro";
 
@@ -15,11 +15,22 @@ const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(d
 >
   <!-- Fondo cinematográfico -->
   <div class="absolute inset-0 z-0 bg-black" aria-hidden="true">
+    <video
+      class="hero-video absolute inset-0 h-full w-full object-cover object-center"
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="auto"
+      poster={heroImage}
+    >
+      <source src="/hero-matrifermoldes.mp4" type="video/mp4" />
+    </video>
     <img
       src={heroImage}
       alt=""
       role="presentation"
-      class="h-full w-full object-cover object-center"
+      class="hero-still absolute inset-0 hidden h-full w-full object-cover object-center"
       fetchpriority="high"
       decoding="async"
     />
@@ -32,6 +43,17 @@ const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(d
     >
     </div>
   </div>
+
+  <!-- Control de pausa del video de fondo -->
+  <button
+    type="button"
+    class="hero-video-toggle absolute bottom-14 right-6 z-20 inline-flex h-11 w-11 items-center justify-center rounded-xl border border-stroke-subtle bg-void-raised/60 text-white backdrop-blur transition-colors duration-200 hover:border-stroke-brand hover:bg-void-elevated/80 lg:right-12"
+    aria-label="Pausar video"
+    aria-pressed="false"
+  >
+    <i class="ph ph-play hidden text-lg" aria-hidden="true"></i>
+    <i class="ph ph-pause text-lg" aria-hidden="true"></i>
+  </button>
 
   <!-- Contenido principal -->
   <div class="relative z-10 mx-auto w-full max-w-[1720px] px-6 lg:px-12">
@@ -61,3 +83,42 @@ const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(d
     </div>
   </div>
 </section>
+
+<script>
+  const heroVideo = document.querySelector<HTMLVideoElement>(".hero-video");
+  const toggle = document.querySelector<HTMLButtonElement>(".hero-video-toggle");
+  const playIcon = document.querySelector(".hero-video-toggle .ph-play");
+  const pauseIcon = document.querySelector(".hero-video-toggle .ph-pause");
+
+  if (heroVideo && toggle && playIcon && pauseIcon) {
+    const sync = () => {
+      const paused = heroVideo.paused;
+      toggle.setAttribute("aria-pressed", String(!paused));
+      toggle.setAttribute("aria-label", paused ? "Reproducir video" : "Pausar video");
+      playIcon.classList.toggle("hidden", !paused);
+      pauseIcon.classList.toggle("hidden", paused);
+    };
+    heroVideo.addEventListener("play", sync);
+    heroVideo.addEventListener("pause", sync);
+    toggle.addEventListener("click", () => {
+      if (heroVideo.paused) {
+        void heroVideo.play();
+      } else {
+        heroVideo.pause();
+      }
+    });
+    sync();
+  }
+</script>
+
+<style is:scoped>
+  @media (prefers-reduced-motion: reduce) {
+    .hero-video,
+    .hero-video-toggle {
+      display: none;
+    }
+    .hero-still {
+      display: block;
+    }
+  }
+</style>
