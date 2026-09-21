@@ -1,0 +1,187 @@
+---
+import triangulo from '@/assets/triangulomatrifer.svg?raw';
+
+const piezas = [
+  { icon: "ph-chair", label: "Pieza 1" },
+  { icon: "ph-monitor", label: "Pieza 2" },
+  { icon: "ph-gear-six", label: "Pieza 3" },
+];
+
+const casos = [
+  {
+    nombre: "Sillas Plásticas",
+    activo: true,
+    titulo: "Sillas Plásticas Inyectadas",
+    resumen:
+      "Recepción de matriz externa. Ajuste en planta, inyección de alto volumen y entrega de producto terminado listo para ensamble.",
+    imagen: "/noticiasillas.webp",
+    especificaciones: [
+      { label: "Máquina", valor: "Inyectora 800 TN" },
+      { label: "Material", valor: "Polipropileno (PP)" },
+      { label: "Cavidades", valor: "1" },
+    ],
+  },
+  {
+    nombre: "Carcasas ABS",
+    activo: false,
+    titulo: "Carcasas ABS",
+    resumen:
+      "Proyecto en desarrollo. Inyección de carcasas en ABS con materiales técnicos y control dimensional.",
+    imagen: "/inyeccion.webp",
+    especificaciones: [
+      { label: "Máquina", valor: "Por definir" },
+      { label: "Material", valor: "ABS" },
+      { label: "Cavidades", valor: "Por definir" },
+    ],
+  },
+  {
+    nombre: "Engranajes Nylon",
+    activo: false,
+    titulo: "Engranajes Nylon",
+    resumen:
+      "Proyecto en desarrollo. Engranajes técnicos en poliamida para aplicaciones de alta exigencia.",
+    imagen: "/inyeccion.webp",
+    especificaciones: [
+      { label: "Máquina", valor: "Por definir" },
+      { label: "Material", valor: "Poliamida (PA)" },
+      { label: "Cavidades", valor: "Por definir" },
+    ],
+  },
+];
+
+const featured = casos.find((caso) => caso.activo) ?? casos[0];
+---
+
+<section id="casos" aria-label="Casos de estudio" class="relative">
+  <!-- BLOQUE B: Grid de casos de estudio -->
+  <div class="border-t border-stroke-subtle bg-void-alt py-24">
+    <div class="mx-auto w-full max-w-[1720px] px-6 lg:px-12">
+      <div class="mb-16 max-w-4xl">
+        <h3
+          class="font-display text-3xl font-semibold uppercase tracking-tight text-white sm:text-4xl lg:text-5xl"
+        >
+          Ingeniería aplicada
+        </h3>
+        <p class="mt-4 max-w-xl font-sans text-content-secondary">
+          Tres proyectos de inyección resueltos en planta, del molde a la pieza terminada.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 gap-8 lg:grid-cols-12">
+        <!-- Columna 1: Lista de casos -->
+        <div class="reveal flex flex-col gap-3 lg:col-span-3" style="--d:0">
+          {casos.map((caso) => (
+            <div
+              class={`text-left font-display text-xl font-semibold transition-colors sm:text-2xl ${
+                caso.activo
+                  ? "border-l-2 border-matrifer-cyan pl-4 text-white"
+                  : "border-l-2 border-transparent pl-4 text-content-muted"
+              }`}
+            >
+              {caso.nombre}
+            </div>
+          ))}
+        </div>
+
+        <!-- Columna 2: Media -->
+        <div
+          class="reveal relative aspect-video overflow-hidden rounded-xl border border-stroke-subtle bg-void-surface lg:col-span-6"
+          style="--d:1"
+        >
+          <!-- TODO: reemplazar la imagen por el video real del proceso de inyección -->
+          <img
+            src={featured.imagen}
+            alt={`Caso de estudio: ${featured.titulo}`}
+            class="h-full w-full object-cover"
+            loading="lazy"
+            decoding="async"
+          />
+          <div
+            class="absolute inset-0 bg-gradient-to-t from-void-base/70 via-transparent to-transparent"
+            aria-hidden="true"
+          ></div>
+          <div class="flex h-full w-full items-center justify-center">
+            <span
+              class="flex h-16 w-16 items-center justify-center rounded-xl bg-void-base/60 text-white backdrop-blur-sm"
+              aria-hidden="true"
+            >
+              <i class="ph ph-play text-2xl"></i>
+            </span>
+          </div>
+        </div>
+
+        <!-- Columna 3: Tarjeta técnica -->
+        <div
+          class="reveal flex flex-col justify-between rounded-xl border border-stroke-subtle bg-void-surface p-6 lg:col-span-3"
+          style="--d:2"
+        >
+          <div>
+            <span
+              class="mb-6 flex h-10 w-10 items-center justify-center rounded-xl bg-matrifer-cyan text-void-base [&_svg]:h-4 [&_svg]:w-4"
+              aria-hidden="true"
+              set:html={triangulo}
+            ></span>
+            <h4 class="mb-4 font-display text-xl font-semibold text-white">
+              {featured.titulo}
+            </h4>
+            <p class="font-sans text-sm leading-relaxed text-content-secondary">
+              {featured.resumen}
+            </p>
+          </div>
+
+          <dl class="mt-8 flex flex-col gap-4 border-t border-stroke-divider pt-5">
+            {featured.especificaciones.map((spec) => (
+              <div class="flex items-center justify-between gap-4 font-sans text-sm">
+                <dt class="text-content-secondary">{spec.label}</dt>
+                <dd class="text-right tabular-nums text-white">{spec.valor}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const section = document.querySelector("[data-injector]");
+  const clampEl = section?.querySelector("[data-injector-clamp]");
+  const pieces = section
+    ? Array.from(section.querySelectorAll("[data-injector-piece]"))
+    : [];
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const hasJs = document.documentElement.classList.contains("js");
+
+  if (section && clampEl && pieces.length > 0 && hasJs && !reduce) {
+    const mm = gsap.matchMedia();
+
+    mm.add("(min-width: 768px)", () => {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: "top center",
+          end: "center center",
+          scrub: 1,
+        },
+      });
+
+      tl.fromTo(clampEl, { xPercent: 0 }, { xPercent: 105, ease: "none", duration: 1.4 });
+      tl.fromTo(
+        pieces,
+        { opacity: 0, scale: 0.92, y: 8 },
+        { opacity: 1, scale: 1, y: 0, stagger: 0.12, duration: 0.6, ease: "power2.out" },
+        0.6,
+      );
+
+      return () => {
+        tl.scrollTrigger?.kill();
+        tl.kill();
+      };
+    });
+  }
+</script>
