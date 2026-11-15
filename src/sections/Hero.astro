@@ -1,7 +1,6 @@
 ---
-// Fondo del hero: video en loop con poster/imagen estática de respaldo.
-const heroImage = "/hero_image.webp";
-import SectionBadge from "@/components/SectionBadge.astro";
+// Hero: título, regla, etiqueta + bajada con CTA, y el dibujo de la inyectora a sangre.
+import InjectorDrawing from "@/components/drawings/InjectorDrawing.astro";
 
 const whatsappNumber = "5491154200297";
 const defaultMessage =
@@ -10,115 +9,38 @@ const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(d
 ---
 
 <section
-  class="relative flex min-h-[100dvh] flex-col justify-end overflow-hidden bg-void-base pb-14 pt-24"
+  class="tone-dark relative z-10 flex min-h-[100dvh] flex-col overflow-hidden"
   aria-label="Presentación de Matrifer Moldes"
 >
-  <!-- Fondo cinematográfico -->
-  <div class="absolute inset-0 z-0 bg-black" aria-hidden="true">
-    <video
-      class="hero-video absolute inset-0 h-full w-full object-cover object-center"
-      autoplay
-      muted
-      loop
-      playsinline
-      preload="auto"
-      poster={heroImage}
-    >
-      <source src="/hero-matrifermoldes.mp4" type="video/mp4" />
-    </video>
-    <img
-      src={heroImage}
-      alt=""
-      role="presentation"
-      class="hero-still absolute inset-0 hidden h-full w-full object-cover object-center"
-      fetchpriority="high"
-      decoding="async"
-    />
-    <div
-      class="absolute inset-0 bg-gradient-to-t from-void-base via-transparent to-black/50"
-    >
-    </div>
-    <div
-      class="absolute inset-0 bg-gradient-to-r from-void-base/85 via-transparent to-void-base/60"
-    >
+  <div class="shell pt-28 lg:pt-[8.5rem]">
+    <h1 class="t-display reveal max-w-[34ch]">
+      Servicio de inyección de termoplásticos y matricería en Moreno.
+    </h1>
+
+    <span class="rule mt-10 lg:mt-12" data-rule></span>
+
+    <div class="mt-8 grid grid-cols-12 gap-x-5 gap-y-6 lg:mt-12">
+      <p class="t-label reveal col-span-12 max-w-[13rem] lg:col-span-4" style="--d:1">
+        Inyección a terceros
+      </p>
+      <div class="reveal col-span-12 lg:col-span-5 lg:col-start-6" style="--d:2">
+        <p class="t-sub2">
+          Ofrecemos soluciones integrales donde la precisión está asegurada y el rendimiento, diseñado.
+        </p>
+        <a
+          class="btn btn-primary mt-8"
+          href={whatsappUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Solicitar presupuesto <i class="ph ph-arrow-elbow-down-right" aria-hidden="true"></i>
+        </a>
+      </div>
     </div>
   </div>
 
-  <!-- Control de pausa del video de fondo -->
-  <button
-    type="button"
-    class="hero-video-toggle absolute bottom-14 right-6 z-20 inline-flex h-11 w-11 items-center justify-center rounded-xl border border-stroke-subtle bg-void-raised/60 text-white backdrop-blur transition-colors duration-200 hover:border-stroke-brand hover:bg-void-elevated/80 lg:right-12"
-    aria-label="Pausar video"
-    aria-pressed="false"
-  >
-    <i class="ph ph-play hidden text-lg" aria-hidden="true"></i>
-    <i class="ph ph-pause text-lg" aria-hidden="true"></i>
-  </button>
-
-  <!-- Contenido principal -->
-  <div class="relative z-10 mx-auto w-full max-w-[1720px] px-6 lg:px-12">
-    <div class="max-w-4xl">
-      <!-- Badge de categoría -->
-      <div class="mb-6">
-        <SectionBadge label="MATRIFER MOLDES" />
-      </div>
-
-      <!-- Titular -->
-      <h1
-        class="mb-10 max-w-3xl font-display text-4xl font-semibold leading-[1.08] tracking-tight text-white sm:text-5xl lg:max-w-4xl lg:text-[54px]"
-      >
-        Servicio de inyección de termoplásticos y matricería en Moreno.
-      </h1>
-
-      <!-- CTA de WhatsApp -->
-      <a
-        href={whatsappUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="mb-10 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-matrifer-blue-deep to-matrifer-indigo px-7 py-3.5 font-sans text-xs font-semibold uppercase tracking-wider text-white shadow-lg shadow-blue-500/20 transition-all duration-200 hover:opacity-95"
-      >
-        Solicitar presupuesto
-        <i class="ph ph-arrow-right text-sm" aria-hidden="true"></i>
-      </a>
-    </div>
+  <!-- Dibujo a sangre: se sale apenas por el borde inferior -->
+  <div class="mt-auto -mb-6 pt-12 lg:-mb-8 lg:pt-14">
+    <InjectorDrawing />
   </div>
 </section>
-
-<script>
-  const heroVideo = document.querySelector<HTMLVideoElement>(".hero-video");
-  const toggle = document.querySelector<HTMLButtonElement>(".hero-video-toggle");
-  const playIcon = document.querySelector(".hero-video-toggle .ph-play");
-  const pauseIcon = document.querySelector(".hero-video-toggle .ph-pause");
-
-  if (heroVideo && toggle && playIcon && pauseIcon) {
-    const sync = () => {
-      const paused = heroVideo.paused;
-      toggle.setAttribute("aria-pressed", String(!paused));
-      toggle.setAttribute("aria-label", paused ? "Reproducir video" : "Pausar video");
-      playIcon.classList.toggle("hidden", !paused);
-      pauseIcon.classList.toggle("hidden", paused);
-    };
-    heroVideo.addEventListener("play", sync);
-    heroVideo.addEventListener("pause", sync);
-    toggle.addEventListener("click", () => {
-      if (heroVideo.paused) {
-        void heroVideo.play();
-      } else {
-        heroVideo.pause();
-      }
-    });
-    sync();
-  }
-</script>
-
-<style is:scoped>
-  @media (prefers-reduced-motion: reduce) {
-    .hero-video,
-    .hero-video-toggle {
-      display: none;
-    }
-    .hero-still {
-      display: block;
-    }
-  }
-</style>

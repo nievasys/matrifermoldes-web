@@ -1,0 +1,428 @@
+---
+// Inyectora horizontal en elevación lateral, dibujo de línea fina.
+// Eje de inyección en y = 196. Máquina entre x = 300 y x = 1140.
+// La geometría repetida se genera desde arrays.
+
+const AXIS = 196;
+
+// Rieles dobles al fondo, a sangre: se extienden más allá del viewBox
+const rails = [318, 324, 372, 378];
+const RAIL_FROM = -2400;
+const RAIL_TO = 3840;
+
+// Soportes de riel fuera de la máquina, como módulos repetidos
+const railBrackets = [-180, -60, 60, 180, 1260, 1380, 1500, 1620];
+
+// Bancada: paneles de acceso
+const panelEdges = Array.from({ length: 9 }, (_, i) => 300 + i * 105);
+const panels = panelEdges.slice(0, -1).map((x, i) => ({ x, louver: i % 2 === 1 }));
+
+// Patas
+const feet = [322, 510, 720, 930, 1118];
+
+// Columnas guía (tie bars): dos pares de líneas dobles
+const tieBars = [132, 140, 252, 260];
+
+// Bandas calefactoras del cañón
+const heaterBands = Array.from({ length: 8 }, (_, i) => 712 + i * 22);
+
+// Hélice del tornillo: zigzag dentro del cañón
+const screwPoints = Array.from({ length: 41 }, (_, i) => {
+  const x = 690 + i * 8;
+  const y = i % 2 === 0 ? 188 : 204;
+  return `${x},${y}`;
+}).join(" ");
+
+// Aletas del motor
+const motorFins = Array.from({ length: 7 }, (_, i) => 1028 + i * 6);
+
+// Botonera del panel de control
+const panelButtons = [
+  [1097, 100],
+  [1109, 100],
+  [1121, 100],
+  [1097, 112],
+  [1109, 112],
+  [1121, 112],
+];
+
+// Circuitos de refrigeración del molde
+const coolingY = [150, 174, 218, 242];
+const ejectorY = [168, 196, 224];
+
+// Tornillo con cruz: círculo + X
+const bolt = (cx: number, cy: number, r = 6) => {
+  const d = r * 0.62;
+  return { cx, cy, r, d };
+};
+const bolts = [
+  // Platina trasera
+  bolt(347, 172),
+  bolt(347, 220),
+  // Platina móvil
+  bolt(490, 172, 5),
+  bolt(490, 220, 5),
+  // Platina fija
+  bolt(633, 160),
+  bolt(633, 232),
+  // Carcasa de accionamiento
+  bolt(952, 172, 5),
+  bolt(1008, 172, 5),
+  bolt(952, 220, 5),
+  bolt(1008, 220, 5),
+];
+const movingBolts = bolts.filter((b) => b.cx > 470 && b.cx < 510);
+const platenBolts = bolts.filter((b) => b.cx < 700 && !movingBolts.includes(b));
+const housingBolts = bolts.filter((b) => b.cx > 900);
+---
+
+<div class="injector overflow-hidden">
+  <div class="flex justify-center">
+    <svg
+      class="drawing min-w-[900px] max-w-none shrink-0 lg:w-[122%]"
+      data-draw
+      data-injector
+      viewBox="0 0 1440 440"
+      preserveAspectRatio="xMidYMax meet"
+      aria-hidden="true"
+    >
+      <defs>
+        <clipPath id="injector-barrel-clip">
+          <rect x="704" y="185" width="196" height="22"></rect>
+        </clipPath>
+      </defs>
+
+      <!-- Rieles de fondo a sangre -->
+      {rails.map((y) => <line class="is-faint" x1={RAIL_FROM} y1={y} x2={RAIL_TO} y2={y} />)}
+      {
+        railBrackets.map((cx) => (
+          <g>
+            <rect class="is-solid" x={cx - 18} y="304" width="36" height="88" />
+            <rect class="is-faint" x={cx - 12} y="310" width="24" height="76" />
+            <rect class="is-faint" x={cx - 5} y="342" width="10" height="12" />
+            {[321, 375].map((cy) => (
+              <g>
+                <circle cx={cx} cy={cy} r="7" />
+                <line x1={cx - 4.5} y1={cy - 4.5} x2={cx + 4.5} y2={cy + 4.5} />
+                <line x1={cx - 4.5} y1={cy + 4.5} x2={cx + 4.5} y2={cy - 4.5} />
+              </g>
+            ))}
+          </g>
+        ))
+      }
+
+      <!-- Bastidor del protector (atrás de la unidad de cierre) -->
+      <g class="is-faint">
+        <line x1="372" y1="78" x2="704" y2="78" />
+        <line x1="372" y1="84" x2="704" y2="84" />
+        <line x1="372" y1="84" x2="372" y2="290" />
+        <line x1="378" y1="84" x2="378" y2="290" />
+        <line x1="698" y1="84" x2="698" y2="290" />
+        <line x1="704" y1="78" x2="704" y2="290" />
+        <rect x="440" y="92" width="200" height="194" />
+        <rect x="448" y="100" width="184" height="112" />
+        <line x1="540" y1="100" x2="540" y2="212" />
+        <rect x="448" y="222" width="184" height="56" />
+        {[460, 520, 580].map((x) => <rect x={x} y="86" width="12" height="4" />)}
+      </g>
+
+      <!-- Bancada -->
+      <rect class="is-solid" x="300" y="296" width="840" height="108" />
+      <rect class="is-solid" x="296" y="290" width="848" height="6" />
+      <line x1="300" y1="396" x2="1140" y2="396" />
+      {panelEdges.map((x) => <line x1={x} y1="296" x2={x} y2="396" />)}
+      {
+        panels.map(({ x, louver }) => (
+          <g>
+            <rect x={x + 8} y="304" width="89" height="84" />
+            {[
+              [x + 14, 310],
+              [x + 91, 310],
+              [x + 14, 382],
+              [x + 91, 382],
+            ].map(([cx, cy]) => (
+              <circle cx={cx} cy={cy} r="1.8" />
+            ))}
+            {louver ? (
+              [324, 332, 340, 348, 356, 364].map((y) => (
+                <line x1={x + 28} y1={y} x2={x + 77} y2={y} />
+              ))
+            ) : (
+              <rect x={x + 42} y="342" width="21" height="6" />
+            )}
+          </g>
+        ))
+      }
+      {
+        feet.map((cx) => (
+          <g>
+            <rect class="is-solid" x={cx - 12} y="404" width="24" height="18" />
+            <line x1={cx} y1="404" x2={cx} y2="422" />
+            <rect class="is-solid" x={cx - 18} y="422" width="36" height="6" />
+          </g>
+        ))
+      }
+
+      <!-- Guías de la platina sobre la bancada -->
+      <line x1="320" y1="284" x2="680" y2="284" />
+
+      <!-- Columnas guía (tie bars) -->
+      {tieBars.map((y) => <line x1="314" y1={y} x2="672" y2={y} />)}
+
+      <!-- Cilindro hidráulico de cierre -->
+      <rect class="is-solid" x="302" y="178" width="28" height="36" />
+      <line x1="308" y1="178" x2="308" y2="214" />
+      <line x1="324" y1="178" x2="324" y2="214" />
+      <circle cx="316" cy="170" r="4" />
+      <line x1="316" y1="174" x2="316" y2="178" />
+
+      <!-- Platina trasera -->
+      <rect class="is-solid" x="330" y="108" width="34" height="182" />
+      <rect x="336" y="116" width="22" height="166" />
+      <rect class="is-solid" x="326" y="128" width="42" height="16" />
+      <rect class="is-solid" x="326" y="248" width="42" height="16" />
+
+      <!-- Tuercas de las columnas -->
+      {
+        [314, 656].map((x) =>
+          [126, 246].map((y) => (
+            <g>
+              <rect class="is-solid" x={x} y={y} width="16" height="20" />
+              <line x1={x} y1={y + 6} x2={x + 16} y2={y + 6} />
+              <line x1={x} y1={y + 14} x2={x + 16} y2={y + 14} />
+            </g>
+          )),
+        )
+      }
+
+      <!-- Rodillera: se pliega al abrir el molde -->
+      <g data-injector-toggle>
+        <line x1="364" y1="192" x2="406" y2="192" />
+        <line x1="364" y1="200" x2="406" y2="200" />
+        <rect class="is-solid" x="406" y="184" width="22" height="24" />
+        <polyline points="364,150 416,118 470,150" />
+        <polyline points="364,160 416,128 470,160" />
+        <polyline points="364,242 416,274 470,242" />
+        <polyline points="364,232 416,264 470,232" />
+        <line x1="412" y1="184" x2="414" y2="126" />
+        <line x1="422" y1="184" x2="420" y2="126" />
+        <line x1="412" y1="208" x2="414" y2="266" />
+        <line x1="422" y1="208" x2="420" y2="266" />
+        <rect x="410" y="116" width="12" height="12" />
+        <rect x="410" y="264" width="12" height="12" />
+        <rect x="364" y="150" width="8" height="10" />
+        <rect x="364" y="232" width="8" height="10" />
+        <rect x="462" y="150" width="8" height="10" />
+        <rect x="462" y="232" width="8" height="10" />
+      </g>
+
+      <!-- Platina móvil + mitad móvil del molde -->
+      <g data-injector-moving>
+        <rect class="is-solid" x="470" y="100" width="40" height="184" />
+        <rect x="476" y="108" width="28" height="168" />
+        <rect class="is-solid" x="466" y="128" width="48" height="16" />
+        <rect class="is-solid" x="466" y="248" width="48" height="16" />
+        <rect class="is-solid" x="464" y="278" width="52" height="8" />
+        {
+          movingBolts.map(({ cx, cy, r, d }) => (
+            <g>
+              <circle cx={cx} cy={cy} r={r} />
+              <line x1={cx - d} y1={cy - d} x2={cx + d} y2={cy + d} />
+              <line x1={cx - d} y1={cy + d} x2={cx + d} y2={cy - d} />
+            </g>
+          ))
+        }
+        <rect class="is-solid" x="510" y="130" width="10" height="132" />
+        <rect class="is-solid" x="520" y="136" width="36" height="120" />
+        <rect x="540" y="160" width="16" height="72" />
+        {coolingY.map((cy) => <circle cx="530" cy={cy} r="4" />)}
+        {
+          ejectorY.map((y) => (
+            <g>
+              <rect x="512" y={y - 3} width="6" height="6" />
+              <line x1="518" y1={y} x2="550" y2={y} />
+            </g>
+          ))
+        }
+      </g>
+
+      <!-- Mitad fija del molde -->
+      <rect class="is-solid" x="556" y="136" width="36" height="120" />
+      <rect class="is-solid" x="592" y="130" width="10" height="132" />
+      <rect x="556" y="160" width="14" height="72" />
+      {coolingY.map((cy) => <circle cx="580" cy={cy} r="4" />)}
+      <line x1="570" y1="192" x2="610" y2="192" />
+      <line x1="570" y1="200" x2="610" y2="200" />
+      <line class="is-faint" x1="556" y1="124" x2="556" y2="268" />
+
+      <!-- Platina fija -->
+      <rect class="is-solid" x="602" y="186" width="8" height="20" />
+      <rect class="is-solid" x="610" y="100" width="46" height="190" />
+      <rect x="616" y="108" width="34" height="174" />
+      <rect class="is-solid" x="606" y="128" width="54" height="16" />
+      <rect class="is-solid" x="606" y="248" width="54" height="16" />
+      <circle cx="633" cy={AXIS} r="10" />
+      <circle cx="633" cy={AXIS} r="4" />
+
+      {
+        platenBolts.map(({ cx, cy, r, d }) => (
+          <g>
+            <circle cx={cx} cy={cy} r={r} />
+            <line x1={cx - d} y1={cy - d} x2={cx + d} y2={cy + d} />
+            <line x1={cx - d} y1={cy + d} x2={cx + d} y2={cy - d} />
+          </g>
+        ))
+      }
+
+      <!-- Unidad de inyección: carro sobre la bancada -->
+      <rect class="is-solid" x="684" y="272" width="380" height="18" />
+      <line x1="684" y1="281" x2="1064" y2="281" />
+      <rect class="is-solid" x="692" y="210" width="12" height="62" />
+      <rect class="is-solid" x="950" y="232" width="60" height="40" />
+      <rect x="958" y="240" width="44" height="24" />
+
+      <!-- Cilindro de carro -->
+      <line x1="704" y1="251" x2="760" y2="251" />
+      <line x1="704" y1="257" x2="760" y2="257" />
+      <rect class="is-solid" x="760" y="244" width="150" height="20" />
+      <line x1="772" y1="244" x2="772" y2="264" />
+      <line x1="898" y1="244" x2="898" y2="264" />
+      <rect x="910" y="248" width="40" height="12" />
+
+      <!-- Boquilla y cabezal -->
+      <polygon points="650,192 664,189 684,185 684,207 664,203 650,200" />
+      <rect class="is-solid" x="684" y="182" width="20" height="28" />
+      <line x1="694" y1="182" x2="694" y2="210" />
+
+      <!-- Cañón -->
+      <rect x="704" y="184" width="196" height="24" />
+
+      <!-- Tornillo alternativo (recortado al cañón) -->
+      <g clip-path="url(#injector-barrel-clip)">
+        <g data-injector-screw>
+          <polygon points="694,196 704,190 704,202" />
+          <line x1="704" y1="193" x2="1020" y2="193" />
+          <line x1="704" y1="199" x2="1020" y2="199" />
+          <polyline class="is-faint" points={screwPoints} />
+        </g>
+      </g>
+
+      {
+        heaterBands.map((x) => (
+          <g>
+            <rect class="is-solid" x={x} y="178" width="14" height="36" />
+            <line x1={x} y1="184" x2={x + 14} y2="184" />
+            <line x1={x} y1="208" x2={x + 14} y2="208" />
+            <rect x={x + 4} y="172" width="6" height="6" />
+          </g>
+        ))
+      }
+
+      <!-- Garganta de alimentación y tolva -->
+      <rect class="is-solid" x="900" y="176" width="40" height="40" />
+      <circle cx="920" cy={AXIS} r="6" />
+      <rect class="is-solid" x="908" y="150" width="24" height="26" />
+      <polygon class="is-solid" points="890,90 950,90 936,150 904,150" />
+      <rect class="is-solid" x="886" y="82" width="68" height="8" />
+      <rect x="914" y="104" width="12" height="30" />
+      {[112, 120, 128].map((y) => <line x1="916" y1={y} x2="924" y2={y} />)}
+      <line x1="896" y1="98" x2="944" y2="98" />
+
+      <!-- Carcasa de accionamiento del tornillo -->
+      <rect class="is-solid" x="940" y="160" width="80" height="72" />
+      <rect x="946" y="166" width="68" height="60" />
+      <line x1="980" y1="166" x2="980" y2="226" />
+      {
+        housingBolts.map(({ cx, cy, r, d }) => (
+          <g>
+            <circle cx={cx} cy={cy} r={r} />
+            <line x1={cx - d} y1={cy - d} x2={cx + d} y2={cy + d} />
+            <line x1={cx - d} y1={cy + d} x2={cx + d} y2={cy - d} />
+          </g>
+        ))
+      }
+
+      <!-- Motor -->
+      <rect class="is-solid" x="1020" y="172" width="52" height="48" />
+      {motorFins.map((x) => <line x1={x} y1="176" x2={x} y2="216" />)}
+      <rect class="is-solid" x="1072" y="180" width="8" height="32" />
+      <rect x="1030" y="160" width="20" height="12" />
+
+      <!-- Panel de control sobre poste -->
+      <rect class="is-solid" x="1104" y="140" width="8" height="150" />
+      <rect class="is-solid" x="1098" y="284" width="20" height="6" />
+      <rect class="is-solid" x="1086" y="56" width="46" height="84" />
+      <rect x="1092" y="64" width="34" height="24" />
+      <line x1="1096" y1="70" x2="1114" y2="70" />
+      <line x1="1096" y1="76" x2="1108" y2="76" />
+      {panelButtons.map(([cx, cy]) => <circle cx={cx} cy={cy} r="3" />)}
+      <circle cx="1105" cy="127" r="6" />
+      <circle cx="1105" cy="127" r="3" />
+      <rect x="1100" y="140" width="16" height="6" />
+
+      <!-- Piezas animadas por opacidad: fuera del fundido general -->
+      <g data-draw-skip>
+        <circle class="is-accent" data-injector-led cx="1124" cy="127" r="2.5" />
+        <path
+          class="is-accent"
+          data-injector-part
+          opacity="0"
+          d="M522 170 h14 v52 h-14 v-5 h8 v-42 h-8 z"
+        />
+      </g>
+    </svg>
+  </div>
+</div>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  document.querySelectorAll<SVGSVGElement>("svg[data-injector]").forEach((svg) => {
+    if (reduce) return;
+    const screw = svg.querySelector("[data-injector-screw]");
+    const moving = svg.querySelector("[data-injector-moving]");
+    const toggle = svg.querySelector("[data-injector-toggle]");
+    const part = svg.querySelector("[data-injector-part]");
+    const led = svg.querySelector("[data-injector-led]");
+    if (!screw || !moving || !toggle || !part || !led) return;
+
+    const ease = "power2.inOut";
+    // Ciclo de inyección: avance del tornillo, apertura, expulsión, cierre, retroceso
+    const cycle = gsap.timeline({ paused: true, repeat: -1, defaults: { ease } });
+    cycle
+      .set(part, { y: 0, opacity: 0 }, 0)
+      .to(screw, { x: -36, duration: 1 }, 0)
+      .to(led, { opacity: 0.25, duration: 0.3, yoyo: true, repeat: 1 }, 0.2)
+      .to(moving, { x: -50, duration: 1 }, 1.5)
+      .to(toggle, { scaleX: 56 / 106, svgOrigin: "364 196", duration: 1 }, 1.5)
+      .to(part, { opacity: 1, duration: 0.25, ease: "power1.out" }, 2.4)
+      .to(part, { y: 70, opacity: 0, duration: 0.8, ease: "power2.in" }, 2.8)
+      .to(moving, { x: 0, duration: 1 }, 3.7)
+      .to(toggle, { scaleX: 1, svgOrigin: "364 196", duration: 1 }, 3.7)
+      .to(screw, { x: 0, duration: 1 }, 4.7)
+      .to({}, { duration: 0.3 }, 5.7);
+
+    // Arranca después del dibujado inicial y se pausa fuera de pantalla
+    let visible = false;
+    let ready = false;
+    const sync = () => (ready && visible ? cycle.play() : cycle.pause());
+    ScrollTrigger.create({
+      trigger: svg,
+      start: "top bottom",
+      end: "bottom top",
+      onToggle: (self) => {
+        visible = self.isActive;
+        sync();
+      },
+    });
+    gsap.delayedCall(2, () => {
+      ready = true;
+      sync();
+    });
+  });
+</script>
