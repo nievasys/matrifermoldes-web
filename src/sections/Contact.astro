@@ -1,53 +1,71 @@
 ---
-const whatsappNumber = "5491154200297";
-const defaultMessage =
-  "Hola! Vi la página web de Matrifer Moldes y quería consultar por los servicios de inyección de plásticos.";
+import SectionLabel from "@/components/SectionLabel.astro";
 
-const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(defaultMessage)}`;
+const destinatario = "matrifer@hotmail.com";
 ---
 
-<section class="relative bg-void-footer py-16" id="contacto" aria-label="Contacto">
-  <div class="mx-auto w-full max-w-[1720px] px-6 lg:px-12">
-    <div
-      class="relative min-h-[520px] w-full overflow-hidden rounded-[20px] shadow-2xl lg:aspect-[1280/509] lg:min-h-0"
-    >
-      <img
-        src="contact.webp"
-        alt=""
-        class="absolute inset-0 h-full w-full object-cover"
-        loading="lazy"
-        decoding="async"
-      />
-
-      <!-- Panel de vidrio líquido -->
-      <div class="glass-panel absolute inset-x-4 inset-y-5 sm:inset-x-6 sm:inset-y-6 lg:inset-x-16 lg:inset-y-7">
-        <div class="flex h-full flex-col justify-between gap-10 p-6 sm:p-10">
-          <div class="flex flex-col justify-between gap-8 lg:flex-row lg:items-start lg:gap-12">
-            <h2
-              class="max-w-[380px] font-sans text-3xl font-normal leading-10 tracking-[-0.9px] text-black sm:text-4xl"
-            >
-              Estamos abiertos a proyectos nuevos
-            </h2>
-            <p
-              class="max-w-[497px] font-sans text-base font-medium leading-[25px] text-[#27282A] sm:text-lg"
-            >
-              Si tenés algún proyecto de inyección de plásticos en mente, recomendamos
-              que converses con nosotros para ofrecerte el mejor asesoramiento.
-            </p>
-          </div>
-
-          <a
-            href={whatsappUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex w-full items-center justify-between gap-6 rounded-xl bg-matrifer-blue px-6 py-7 transition-colors hover:bg-matrifer-blue-deep sm:w-fit sm:min-w-[328px] sm:py-8"
-          >
-            <span class="text-2xl font-light tracking-[-0.9px] text-white">Contactanos</span>
-            <span class="text-3xl font-light leading-10 text-white" aria-hidden="true">→</span>
-          </a>
-        </div>
+<section id="contacto" class="tone-paper pb-28 pt-28" aria-label="Contacto">
+  <div class="shell">
+    <div class="grid grid-cols-12 gap-x-5 gap-y-16">
+      <div class="col-span-12 lg:col-span-5">
+        <SectionLabel label="Contacto" />
+        <h2 class="t-heading reveal mt-8">Estamos abiertos a proyectos nuevos</h2>
+        <p class="t-body-lg reveal mt-8 max-w-[28rem] text-tone-muted" style="--d:1">
+          Si tenés algún proyecto de inyección de plásticos en mente, recomendamos
+          que converses con nosotros para ofrecerte el mejor asesoramiento.
+        </p>
       </div>
+
+      <form id="contact-form" class="reveal col-span-12 grid gap-12 lg:col-span-6 lg:col-start-7" style="--d:2" novalidate>
+        <div class="flex flex-col gap-2">
+          <label for="nombre" class="t-label text-tone-fg">
+            Nombre completo
+          </label>
+          <input
+            id="nombre"
+            name="nombre"
+            type="text"
+            required
+            maxlength="60"
+            placeholder="Tu nombre"
+            class="w-full rounded-none border-0 border-b border-tone-line bg-transparent px-0 py-3 t-body text-tone-fg placeholder:text-tone-muted outline-none transition-[border-color,box-shadow] duration-200 focus:border-tone-fg focus:shadow-[0_1px_0_0_var(--fg)]"
+          />
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <label for="mensaje" class="t-label text-tone-fg">
+            Mensaje
+          </label>
+          <textarea
+            id="mensaje"
+            name="mensaje"
+            required
+            rows="4"
+            maxlength="2000"
+            placeholder="¿En qué industria estás? ¿Cuál es tu producto o servicio? ¿Qué querés lograr con él?"
+            class="min-h-[140px] resize-y w-full rounded-none border-0 border-b border-tone-line bg-transparent px-0 py-3 t-body text-tone-fg placeholder:text-tone-muted outline-none transition-[border-color,box-shadow] duration-200 focus:border-tone-fg focus:shadow-[0_1px_0_0_var(--fg)]"
+          ></textarea>
+        </div>
+
+        <div>
+          <button type="submit" class="btn btn-ink">
+            Enviar consulta
+            <i class="ph ph-arrow-elbow-down-right" aria-hidden="true"></i>
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 </section>
 
+<script define:vars={{ destinatario }}>
+  const form = document.querySelector("#contact-form");
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const nombre = document.querySelector("#nombre")?.value.trim();
+    const mensaje = document.querySelector("#mensaje")?.value.trim();
+    if (!nombre || !mensaje) return;
+    const body = `Hola Matrifer,\n\nSoy ${nombre} y quería consultarte sobre ${mensaje}.`;
+    window.location.href = `mailto:${destinatario}?subject=${encodeURIComponent("Consulta web - Matrifer Moldes")}&body=${encodeURIComponent(body)}`;
+  });
+</script>

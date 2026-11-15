@@ -1,4 +1,6 @@
 ---
+import BlueprintGrid from "@/components/drawings/BlueprintGrid.astro";
+
 const navColumnaCompany = [
   { label: "Nosotros", href: "#about" },
   { label: "Servicios", href: "#servicios" },
@@ -28,136 +30,127 @@ const PLATFORMS = {
   facebook:
     "https://www.facebook.com/people/Matrifer-Moldes/pfbid022aodJ7Si9uXxu3qjeDxzKv8QLQ8K8MJDT2aPuTVPjz9hQ4TuB4Ms49AJ7rDVuchxl/",
 };
+
+const redes = [
+  { label: "TikTok", href: PLATFORMS.tiktok },
+  { label: "Instagram", href: PLATFORMS.instagram },
+  { label: "Facebook", href: PLATFORMS.facebook },
+];
 ---
 
 <footer
-  class="border-t border-stroke-divider bg-void-footer pb-12 pt-16 font-sans text-content-secondary"
+  class="tone-night relative flex flex-col overflow-hidden pt-32 lg:min-h-[100dvh]"
   aria-label="Pie de página"
+  data-footer-trigger
 >
-  <div class="mx-auto w-full max-w-[1720px] px-6 lg:px-12">
-    <!-- Navegación superior -->
+  <!-- Fila superior: navegación gigante y enlaces chicos -->
+  <div class="shell">
+    <div class="grid grid-cols-12 gap-x-5 gap-y-12">
+      <nav class="col-span-12 lg:col-span-7" aria-label="Navegación del pie">
+        <ul class="t-heading flex flex-wrap gap-x-[0.25em]">
+          {
+            navColumnaCompany.map((item, index) => (
+              <li>
+                <a href={item.href} class="transition-colors duration-200 hover:text-matrifer-cyan">
+                  {item.label}
+                </a>
+                {index < navColumnaCompany.length - 1 && (
+                  <span class="text-tone-fg" aria-hidden="true">
+                    {" "}/
+                  </span>
+                )}
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <ul class="t-label col-span-12 flex flex-col gap-3 lg:col-span-3 lg:col-start-10">
+        {
+          redes.map((red) => (
+            <li>
+              <a
+                href={red.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="transition-colors duration-200 hover:text-matrifer-cyan"
+              >
+                {red.label}
+              </a>
+            </li>
+          ))
+        }
+        {
+          navColumnaLegal.map((item) => (
+            <li>
+              <a href={item.href} class="transition-colors duration-200 hover:text-matrifer-cyan">
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+
+  <!-- Hoja de plano con tarjetas de contacto apiladas -->
+  <div
+    class="relative mt-16 pt-[5.3125rem] lg:absolute lg:bottom-0 lg:right-0 lg:mt-0 lg:h-[55%] lg:w-[57%] lg:pt-0"
+  >
+    <BlueprintGrid bare />
     <div
-      class="grid grid-cols-1 gap-10 border-b border-stroke-divider pb-16 md:grid-cols-2 lg:grid-cols-5"
+      class="relative z-10 overflow-hidden lg:absolute lg:bottom-0 lg:right-0 lg:w-[43.75rem] lg:max-w-[calc(100%-5.3125rem)]"
     >
-      <!-- Marca y distintivos -->
-      <div class="space-y-8 lg:col-span-2">
-        <div class="flex items-center gap-3">
-          <a href="/" class="flex items-center gap-3">
-            <img
-              src="/logo.svg"
-              alt="Logo Matrifer Moldes"
-              class="h-9 w-auto object-contain"
-              loading="lazy"
-            />
-            <div
-              class="flex flex-col pl-2.5 text-[11px] font-medium leading-[13px] tracking-tight"
+      <div class="tone-paper p-8 lg:p-10 lg:pb-[15.5rem]" data-footer-layer>
+        <p class="t-label text-tone-muted">Contacto</p>
+        <ul class="t-sub2 mt-6 flex flex-col gap-1">
+          <li>
+            <a href="mailto:matrifer@hotmail.com" class="hover:underline">matrifer@hotmail.com</a>
+          </li>
+          <li>Colectora Sur Acceso Oeste 9924, La Reja, Moreno</li>
+          <li>
+            <a
+              href="https://wa.me/5491154200297"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="hover:underline"
             >
-              <span
-                class="font-display text-lg font-extrabold uppercase tracking-wider text-white"
-              >
-                MATRIFER MOLDES
-              </span>
-              <span
-                class="text-[10px] uppercase tracking-widest text-content-secondary"
-              >
-                Inyección a terceros
-              </span>
-            </div>
-          </a>
+              +54 9 11 5420-0297
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div
+        class="tone-accent flex min-h-[12.5rem] flex-col justify-between gap-8 p-8 lg:absolute lg:bottom-0 lg:right-0 lg:h-[12.5rem] lg:w-[30rem] lg:p-10"
+        data-footer-layer
+      >
+        <p class="t-label-sm">Inyección a terceros</p>
+        <div class="flex items-center gap-3">
+          <img src="/logo.svg" alt="Logo Matrifer Moldes" class="h-8 w-auto brightness-0" loading="lazy" />
+          <span class="t-sub3 text-ink">Matrifer Moldes</span>
         </div>
       </div>
-
-      <!-- Columna: Empresa -->
-      <div>
-        <h4
-          class="mb-5 font-display text-xs font-semibold uppercase tracking-widest text-white"
-        >
-          Empresa
-        </h4>
-        <ul class="space-y-3 text-xs">
-          {
-            navColumnaCompany.map((item) => (
-              <li>
-                <a href={item.href} class="transition-colors hover:text-white">
-                  {item.label}
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-      </div>
-
-      <!-- Columna: Servicios -->
-      <div>
-        <h4
-          class="mb-5 font-display text-xs font-semibold uppercase tracking-widest text-white"
-        >
-          Servicios
-        </h4>
-        <ul class="space-y-3 text-xs">
-          {
-            navColumnaServicios.map((item) => (
-              <li>
-                <a href={item.href} class="transition-colors hover:text-white">
-                  {item.label}
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-      </div>
-
-      <!-- Columna: Legal -->
-      <div>
-        <h4
-          class="mb-5 font-display text-xs font-semibold uppercase tracking-widest text-white"
-        >
-          Legal
-        </h4>
-        <ul class="space-y-3 text-xs">
-          {
-            navColumnaLegal.map((item) => (
-              <li>
-                <a href={item.href} class="transition-colors hover:text-white">
-                  {item.label}
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-      </div>
     </div>
+  </div>
 
-    <!-- Pie inferior: redes y copyright -->
-    <div
-      class="flex flex-col items-start justify-between gap-6 pt-8 text-[11px] leading-relaxed text-content-muted lg:flex-row lg:items-center"
-    >
-      <div
-        class="flex font-display items-center gap-6 text-xs uppercase tracking-widest text-content-secondary"
-      >
-        <a
-          href={PLATFORMS.tiktok}
-          class="flex items-center gap-1 transition-colors hover:text-white"
-        >
-          TIKTOK ↗
-        </a>
-        <a
-          href={PLATFORMS.instagram}
-          class="flex items-center gap-1 transition-colors hover:text-white"
-        >
-          INSTAGRAM ↗
-        </a>
-        <a
-          href={PLATFORMS.facebook}
-          class="flex items-center gap-1 transition-colors hover:text-white"
-        >
-          FACEBOOK ↗
-        </a>
-      </div>
-      <div class="max-w-2xl w-full text-right font-light lg:ml-auto">
-        © 2026 Matrifer Moldes. Especialistas en matricería de alta
-        precisión y servicios de inyección técnica de termoplásticos a terceros.
-      </div>
+  <!-- Bloque inferior izquierdo: servicios y copyright -->
+  <div class="shell mt-16 pb-10 lg:mt-auto lg:pt-16">
+    <div class="lg:max-w-[40%]">
+      <ul class="t-label-sm flex flex-wrap gap-x-5 gap-y-2 text-tone-muted">
+        {
+          navColumnaServicios.map((item) => (
+            <li>
+              <a href={item.href} class="transition-colors duration-200 hover:text-matrifer-cyan">
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="t-label-sm mt-6 border-t border-tone-line pt-6">
+        © 2026 Matrifer Moldes. Especialistas en matricería de alta precisión y servicios de
+        inyección técnica de termoplásticos a terceros.
+      </p>
     </div>
   </div>
 </footer>

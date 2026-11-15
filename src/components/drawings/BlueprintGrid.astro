@@ -1,0 +1,187 @@
+---
+// Hoja de plano: grilla de celdas cuadradas con anotaciones técnicas en línea.
+// Por defecto muestra un área central limpia (slot) con una celda de grilla alrededor.
+// Con `bare` solo dibuja la grilla y las anotaciones como fondo absoluto.
+interface Props {
+  class?: string;
+  bare?: boolean;
+}
+
+const { class: className = "", bare = false } = Astro.props;
+
+// Anotaciones a escala de escritorio: las posiciones se expresan en celdas.
+// Cada SVG mide 40px de alto con la línea de grilla en y = 20.
+type Anotacion = {
+  tipo: "cota" | "nodo" | "marca";
+  col: number;
+  fila: number;
+  desde?: "top" | "bottom";
+  span?: number;
+  textos: string[];
+  clase?: string;
+};
+
+const anotacionesPlano: Anotacion[] = [
+  { tipo: "marca", col: 3.5, fila: 1, textos: ["R 0.5", "1:1"] },
+  { tipo: "cota", col: 8, fila: 1, span: 1, textos: ["Ø 12"] },
+  { tipo: "nodo", col: 1, fila: 1, desde: "bottom", span: 4, textos: ["A", "A-A"] },
+  { tipo: "cota", col: 8, fila: 1, desde: "bottom", span: 1, textos: ["1:1"] },
+  { tipo: "cota", col: 12, fila: 1, span: 1, textos: ["Ø 12"], clase: "hidden xl:block" },
+];
+
+const anotacionesFondo: Anotacion[] = [
+  { tipo: "nodo", col: 1, fila: 1, span: 3, textos: ["A", "B"] },
+  { tipo: "cota", col: 4, fila: 1, span: 1, textos: ["Ø 12"] },
+  { tipo: "marca", col: 7.5, fila: 1, textos: ["R 0.5", "1:1"] },
+  { tipo: "nodo", col: 1, fila: 2, span: 0.5, textos: ["A-A"] },
+  { tipo: "nodo", col: 1, fila: 3, span: 0.5, textos: ["B-B"] },
+];
+
+const anotaciones = bare ? anotacionesFondo : anotacionesPlano;
+
+const celda = 85;
+const posicion = (a: Anotacion) => {
+  const offset = a.tipo === "marca" ? 30 : 6;
+  const x = `left: calc(var(--cell) * ${a.col} - ${offset}px);`;
+  const y =
+    a.desde === "bottom"
+      ? `bottom: calc(var(--cell) * ${a.fila} - 20px);`
+      : `top: calc(var(--cell) * ${a.fila} - 20px);`;
+  return x + y;
+};
+---
+
+<div
+  class:list={[
+    "blueprint",
+    bare ? "pointer-events-none absolute inset-0" : "relative border border-tone-line",
+    className,
+  ]}
+  aria-hidden={bare ? "true" : undefined}
+>
+  {
+    bare && (
+      <svg
+        class="blueprint-note hidden lg:block"
+        style={`left: 0; top: 0; width: ${celda}px; height: ${celda}px;`}
+        viewBox={`0 0 ${celda} ${celda}`}
+        aria-hidden="true"
+      >
+        <line x1="0" y1={celda} x2={celda} y2="0" stroke-dasharray="3 3" />
+      </svg>
+    )
+  }
+
+  {
+    anotaciones.map((a) => {
+      const largo = (a.span ?? 1) * celda;
+      if (a.tipo === "cota") {
+        return (
+          <svg
+            class:list={["blueprint-note", a.clase ?? "hidden lg:block"]}
+            style={`${posicion(a)} width: ${largo + 12}px; height: 40px;`}
+            viewBox={`0 0 ${largo + 12} 40`}
+            aria-hidden="true"
+          >
+            <line x1="10" y1="20" x2={largo + 2} y2="20" stroke-dasharray="2 3" />
+            <path d={`M 14 13 Q ${largo / 2 + 6} 0 ${largo - 2} 13`} />
+            <circle cx="6" cy="20" r="4" class="is-solid" />
+            <circle cx={largo + 6} cy="20" r="4" class="is-solid" />
+            <text x={largo / 2 + 6} y="33" text-anchor="middle">
+              {a.textos[0]}
+            </text>
+          </svg>
+        );
+      }
+      if (a.tipo === "nodo") {
+        return (
+          <svg
+            class:list={["blueprint-note", a.clase ?? "hidden lg:block"]}
+            style={`${posicion(a)} width: ${largo + 12}px; height: 40px;`}
+            viewBox={`0 0 ${largo + 12} 40`}
+            aria-hidden="true"
+          >
+            <line x1="13" y1="20" x2={largo + 2} y2="20" stroke-dasharray="2 3" />
+            <polygon points="1,13 13,20 1,27" class="is-solid" />
+            {a.span !== undefined && a.span >= 1 && (
+              <circle cx={largo + 6} cy="20" r="4" class="is-solid" />
+            )}
+            <text x="16" y="12">
+              {a.textos[0]}
+            </text>
+            {a.textos[1] && (
+              <text x={largo + 12} y="12" text-anchor="end">
+                {a.textos[1]}
+              </text>
+            )}
+          </svg>
+        );
+      }
+      return (
+        <svg
+          class:list={["blueprint-note", a.clase ?? "hidden lg:block"]}
+          style={`${posicion(a)} width: 80px; height: 40px;`}
+          viewBox="0 0 80 40"
+          aria-hidden="true"
+        >
+          <line x1="22" y1="30" x2="40" y2="10" />
+          <text x="20" y="33" text-anchor="end">
+            {a.textos[0]}
+          </text>
+          <text x="44" y="12">
+            {a.textos[1]}
+          </text>
+        </svg>
+      );
+    })
+  }
+
+  {
+    !bare && (
+      <div class="blueprint-inner relative isolate bg-tone-bg">
+        <slot />
+      </div>
+    )
+  }
+</div>
+
+<style>
+  .blueprint {
+    --cell: 2.65625rem;
+    --note: color-mix(in srgb, var(--fg) 34%, transparent);
+    background-image:
+      linear-gradient(to right, var(--line) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--line) 1px, transparent 1px);
+    background-size: var(--cell) var(--cell);
+  }
+  @media (min-width: 1024px) {
+    .blueprint {
+      --cell: 5.3125rem;
+    }
+  }
+  .blueprint:not(.absolute) {
+    padding: var(--cell);
+  }
+  .blueprint-inner {
+    box-shadow: 0 0 0 1px var(--line);
+  }
+  .blueprint-note {
+    position: absolute;
+    z-index: 1;
+    overflow: visible;
+    pointer-events: none;
+    fill: none;
+    stroke: var(--note);
+    stroke-width: 1;
+  }
+  .blueprint-note .is-solid {
+    fill: var(--bg);
+  }
+  .blueprint-note text {
+    fill: var(--note);
+    stroke: none;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 8px;
+    letter-spacing: 0.04em;
+  }
+</style>
