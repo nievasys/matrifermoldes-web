@@ -326,8 +326,9 @@
 html {
   scroll-padding-top: 6rem;
 }
+/* Con Lenis activo el scroll suave lo maneja JS; sin JS queda el nativo. */
 @media (prefers-reduced-motion: no-preference) {
-  html {
+  html:not(.lenis) {
     scroll-behavior: smooth;
   }
 }

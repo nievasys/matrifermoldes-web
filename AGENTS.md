@@ -32,7 +32,7 @@ Other commands:
 
 - Single page: `src/pages/index.astro` composes `src/sections/*.astro` in order: Header, Hero, About, Servicios, CaseStudies, WhyUs, News, Location, Contact, Footer.
 - Layout in `src/layouts/Layout.astro` (head meta, OG, theme-color, `.js` class marker, reveal observer, anchor scrolling).
-- Scroll motion lives in `src/scripts/motion.ts` (GSAP + ScrollTrigger) and is wired through `data-*` hooks.
+- Scroll motion lives in `src/scripts/motion.ts` (Lenis smooth scroll + GSAP ScrollTrigger on one shared ticker) and is wired through `data-*` hooks. Lenis is exposed as `window.lenis`; programmatic scrolling must go through it when present.
 - Shared pieces: `src/components/SectionLabel.astro` and the line drawings in `src/components/drawings/`.
 - Path alias `@/*` resolves to `src/*`.
 - Design tokens and component classes live in `src/styles/global.css`. Assets (images, logo) in `public/`.

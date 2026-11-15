@@ -68,9 +68,17 @@ const { title, description } = Astro.props
 				if (!section) return;
 				event.preventDefault();
 				const offset = 96;
-				const top = section.getBoundingClientRect().top + window.scrollY - offset;
+				// Posición de layout, sin transforms: las secciones con escala o
+				// desplazamiento por scroll darían un destino corrido.
+				let layoutTop = 0;
+				for (let el = section as HTMLElement | null; el; el = el.offsetParent as HTMLElement | null) {
+					layoutTop += el.offsetTop;
+				}
+				const top = layoutTop - offset;
 				const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
-				if (reduce.matches) {
+				if (window.lenis) {
+					window.lenis.scrollTo(top, { duration: 1.4 });
+				} else if (reduce.matches) {
 					window.scrollTo(0, top);
 				} else {
 					window.scrollTo({ top, behavior: "smooth" });

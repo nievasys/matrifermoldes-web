@@ -2,6 +2,8 @@
 // without JS or with reduced motion the page stays static and fully readable.
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Lenis from "lenis";
+import "lenis/dist/lenis.css";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -199,7 +201,30 @@ function initStack() {
   };
 }
 
+declare global {
+  interface Window {
+    lenis?: Lenis;
+  }
+}
+
+// Scroll suave con inercia, como la referencia. Un solo reloj: GSAP mueve a Lenis
+// y ScrollTrigger lee la posición en cada paso. Con movimiento reducido no se crea.
+function initSmoothScroll() {
+  const lenis = new Lenis({
+    lerp: 0.1,
+    wheelMultiplier: 0.8,
+    smoothWheel: true,
+    // Carrusel de noticias y menú: scroll nativo.
+    prevent: (node) => Boolean(node.closest("[data-news-track], #site-menu")),
+  });
+  window.lenis = lenis;
+  lenis.on("scroll", ScrollTrigger.update);
+  gsap.ticker.add((time) => lenis.raf(time * 1000));
+  gsap.ticker.lagSmoothing(0);
+}
+
 if (!reduce) {
+  initSmoothScroll();
   const mm = gsap.matchMedia();
   initRules();
   initDrawings();
