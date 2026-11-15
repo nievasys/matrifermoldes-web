@@ -30,22 +30,25 @@ Other commands:
 
 ## Architecture
 
-- Single page: `src/pages/index.astro` composes `src/sections/*.astro` in order: Header, Hero, About, Servicios, WhyUs, News, Contact, Footer.
-- Layout in `src/layouts/Layout.astro` (head meta, OG, theme-color, `.js` class marker, reveal-observer script).
+- Single page: `src/pages/index.astro` composes `src/sections/*.astro` in order: Header, Hero, About, Servicios, CaseStudies, WhyUs, News, Location, Contact, Footer.
+- Layout in `src/layouts/Layout.astro` (head meta, OG, theme-color, `.js` class marker, reveal observer, anchor scrolling).
+- Scroll motion lives in `src/scripts/motion.ts` (GSAP + ScrollTrigger) and is wired through `data-*` hooks.
+- Shared pieces: `src/components/SectionLabel.astro` and the line drawings in `src/components/drawings/`.
 - Path alias `@/*` resolves to `src/*`.
-- Design tokens live in `src/styles/global.css` (`@theme` block). Assets (images, logo) in `public/`.
-- Brand glyph asset: `src/assets/triangulomatrifer.svg`.
+- Design tokens and component classes live in `src/styles/global.css`. Assets (images, logo) in `public/`.
 
 ## Design system (mandatory)
 
-Do not invent new tokens. Use the existing system:
+The layout, scroll and motion follow the reference https://www.podiumautomation.com/our-services with MatriFer brand and copy. Do not invent new tokens. Use the existing system:
 
-- **Sole accent color:** matrifer-cyan `#01C1F2`. Used for badges, numbers, hovers, strokes. Max one accent per page (Color Consistency Lock).
-- **CTA backgrounds:** gradient `from-matrifer-blue-deep (#2563EB)` → `to-matrifer-indigo (#4426BC)` so white text passes WCAG AA. Never put white text on cyan (fails contrast).
-- **Palette:** dark-only "void" family `#020611` → `#030712` (footer). Dark-only is the brand identity. Do not add light sections.
-- **Type:** Space Grotesk for display, Plus Jakarta Sans for body. No font swaps.
-- **Radius system (documented, "Precision"):** 12px for all surfaces and CTAs (`rounded-xl`), 20px for the signature glass panel. Max radius 20px site-wide. No pill radii.
-- **Motion:** scroll-reveal only via the `.reveal` / `.is-visible` system in `global.css`, driven by the IntersectionObserver in `Layout.astro`, gated by `prefers-reduced-motion` and the `.js` class. Animate only `transform` and `opacity`. Never `window.addEventListener("scroll")`.
+- **Section tones:** every section takes one tone class: `tone-dark` (#020611), `tone-night` (footer), `tone-paper` (pale cyan), `tone-accent` (matrifer-cyan) or `tone-light`. Use the tone utilities (`text-tone-fg`, `text-tone-muted`, `border-tone-line`, `bg-tone-soft`) instead of fixed colors.
+- **Sole accent color:** matrifer-cyan `#01C1F2`. Text on cyan, paper and light tones is ink `#020611`. Never put white text on cyan (fails contrast).
+- **Type:** Space Grotesk for display, Plus Jakarta Sans for body. Use the scale classes (`t-display`, `t-heading`, `t-statement`, `t-sub1..3`, `t-label`, `t-body-lg`). Headings are weight 400 with tight tracking, never bold, never uppercase.
+- **Radius:** 4px (`rounded-[4px]`) for buttons, boxes and controls. Photos have no radius.
+- **Buttons:** `btn btn-primary` (cyan), `btn-light`, `btn-ink`, and `link-arrow`, all with the `ph-arrow-elbow-down-right` icon.
+- **Layout:** `.shell` (full width, 40px side padding desktop, 20px mobile) with a 12 column grid. Rows are separated by 1px rules (`.rule`), not cards.
+- **Drawings:** technical line art is hand-written inline SVG with the `.drawing` class, with at most one or two tiny cyan details each.
+- **Motion:** reveal on enter via `.reveal` / `.is-visible` (IntersectionObserver in `Layout.astro`), and scroll-driven motion via the hooks in `src/scripts/motion.ts` (`data-rule`, `data-under`, `data-takeover`, `data-cover`, `data-stack-*`, `data-footer-*`, `svg[data-draw]`). Everything is gated by `prefers-reduced-motion` and works without JS. Animate `transform`, `opacity` and `clip-path`. Never add your own `window.addEventListener("scroll")`.
 
 ## Design rules (required)
 
@@ -55,7 +58,7 @@ Non-negotiables from the skill:
 
 - **Zero em-dashes (`—`) or en-dashes (`–`) anywhere visible.** Use hyphens, periods, or line breaks.
 - `min-h-[100dvh]` for full-viewport sections, never `h-screen`.
-- Hero fits the viewport: headline max 2 lines on desktop, CTA visible without scroll, top padding max `pt-24`.
+- Hero: headline max 2 lines on desktop and CTA visible without scroll. The line drawing may extend below the fold.
 - Eyebrow budget: at most `ceil(sectionCount / 3)` uppercase-tracking micro-labels above section headlines. Hero counts as one.
 - No section-number labels ("01", "02"), no scroll cues, no decorative status dots.
 - No duplicate CTA intent with different labels for the same action.
@@ -64,9 +67,9 @@ Non-negotiables from the skill:
 ## SEO and integrity constraints (never change without explicit approval)
 
 - URL structure and slugs, in particular `/`.
-- Anchor IDs: `#about`, `#servicios`, `#noticias`, `#contacto`.
+- Anchor IDs: `#about`, `#servicios`, `#casos`, `#noticias`, `#ubicacion`, `#contacto`.
 - Primary nav labels (Header and Footer).
-- Form field names and order (none currently; WhatsApp is the only conversion path).
+- Form field names and order in the Contact form (`nombre`, `mensaje`).
 - Brand logo/wordmark (`public/logo.svg`, `favicon.svg`).
 - Legal/consent copy in the Footer.
 - Copy voice: direct, technical, es-AR. Visual changes are not content rewrites. Fix grammar bugs, do not rewrite copy.
