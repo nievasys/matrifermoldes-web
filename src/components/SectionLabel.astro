@@ -1,0 +1,14 @@
+---
+// Small section label with the square marker used across the page.
+interface Props {
+  label: string;
+  as?: "p" | "h2" | "h3";
+}
+
+const { label, as: Tag = "p" } = Astro.props;
+---
+
+<Tag class="t-label flex items-center gap-2 text-tone-fg">
+  <span aria-hidden="true" class="inline-block h-2 w-2 shrink-0 bg-tone-fg"></span>
+  {label}
+</Tag>

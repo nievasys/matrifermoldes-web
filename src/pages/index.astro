@@ -45,13 +45,19 @@ import Footer from '@/sections/Footer.astro';
 		})}
 	/>
 	<Header />
-	<Hero />
-	<Servicios />
-	<CaseStudies />
-	<About />
-	<WhyUs />
-	<News />
-	<Contact />
-	<Location />
+	<main>
+		<Hero />
+		<div data-under class="overflow-clip">
+			<About />
+		</div>
+		<Servicios />
+		<CaseStudies />
+		<WhyUs />
+		<div data-takeover class="tone-dark">
+			<News />
+		</div>
+		<Location />
+		<Contact />
+	</main>
 	<Footer />
 </Layout>

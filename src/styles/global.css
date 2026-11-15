@@ -39,6 +39,22 @@
   --color-stroke-medium: rgba(255, 255, 255, 0.18);
   --color-stroke-brand: rgba(0, 180, 240, 0.30);
   --color-stroke-divider: #1E293B;
+  /* Superficies claras del sistema por tonos */
+  --color-ink: #020611;
+  --color-paper: #E6F7FD;
+  --color-snow: #F6FAFC;
+
+  /* Radio de referencia */
+  --radius-ref: 0.25rem;
+}
+
+/* Colores semánticos: toman el valor del tono de la sección */
+@theme inline {
+  --color-tone-bg: var(--bg);
+  --color-tone-fg: var(--fg);
+  --color-tone-muted: var(--muted);
+  --color-tone-line: var(--line);
+  --color-tone-soft: var(--soft);
 }
 
 /* Scrollbars refinados */
@@ -64,24 +80,246 @@
   scrollbar-width: none;
 }
 
-/* Scroll-reveal: solo cuando hay JS y movimiento permitido */
-.js .reveal {
-  opacity: 0;
-  transform: translateY(24px);
-  transition:
-    opacity 0.7s ease,
-    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-  transition-delay: calc(var(--d, 0) * 90ms);
-}
-.js .reveal.is-visible {
-  opacity: 1;
-  transform: none;
-}
-@media (prefers-reduced-motion: reduce) {
+/* Capa de componentes: las utilidades de Tailwind siempre pueden pisarla */
+@layer components {
+  /* Tonos de sección: cada bloque define su fondo, texto y líneas */
+  .tone-dark,
+  .tone-night,
+  .tone-paper,
+  .tone-accent,
+  .tone-light {
+    background-color: var(--bg);
+    color: var(--fg);
+  }
+  .tone-dark {
+    --bg: #020611;
+    --fg: #ffffff;
+    --muted: #94a3b8;
+    --line: rgba(255, 255, 255, 0.16);
+    --soft: rgba(255, 255, 255, 0.06);
+  }
+  .tone-night {
+    --bg: #030712;
+    --fg: #ffffff;
+    --muted: #94a3b8;
+    --line: rgba(255, 255, 255, 0.14);
+    --soft: rgba(255, 255, 255, 0.05);
+  }
+  .tone-paper {
+    --bg: #e6f7fd;
+    --fg: #020611;
+    --muted: #3b4a5e;
+    --line: rgba(2, 6, 17, 0.16);
+    --soft: rgba(2, 6, 17, 0.05);
+  }
+  .tone-accent {
+    --bg: #01c1f2;
+    --fg: #020611;
+    --muted: rgba(2, 6, 17, 0.74);
+    --line: rgba(2, 6, 17, 0.2);
+    --soft: rgba(2, 6, 17, 0.07);
+  }
+  .tone-light {
+    --bg: #f6fafc;
+    --fg: #020611;
+    --muted: #475569;
+    --line: rgba(2, 6, 17, 0.14);
+    --soft: rgba(2, 6, 17, 0.04);
+  }
+
+  /* Escala tipográfica */
+  .t-display,
+  .t-statement,
+  .t-heading {
+    font-family: var(--font-display);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.04em;
+    text-wrap: balance;
+  }
+  .t-display {
+    font-size: clamp(2.5rem, 4.75vw, 4.25rem);
+  }
+  .t-statement {
+    font-size: clamp(1.75rem, 3.35vw, 3rem);
+  }
+  .t-heading {
+    font-size: clamp(2rem, 3.9vw, 3.5rem);
+  }
+  .t-sub1,
+  .t-sub2,
+  .t-sub3 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+  .t-sub1 {
+    font-size: clamp(1.375rem, 2.25vw, 2rem);
+  }
+  .t-sub2 {
+    font-size: clamp(1.125rem, 1.7vw, 1.5rem);
+  }
+  .t-sub3 {
+    font-size: 1.25rem;
+  }
+  .t-label,
+  .t-label-sm {
+    font-family: var(--font-display);
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+  .t-label {
+    font-size: 1rem;
+  }
+  .t-label-sm {
+    font-size: 0.875rem;
+  }
+  .t-body-lg {
+    font-size: clamp(1.0625rem, 1.4vw, 1.25rem);
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+  }
+  .t-body {
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  /* Contenedor a sangre con el margen de la referencia */
+  .shell {
+    width: 100%;
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 1024px) {
+    .shell {
+      padding-inline: 2.5rem;
+    }
+  }
+
+  /* Línea divisoria que se dibuja al entrar en pantalla */
+  .rule {
+    display: block;
+    height: 1px;
+    width: 100%;
+    background-color: var(--line);
+  }
+
+  /* Botones */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    border-radius: var(--radius-ref);
+    padding: 0.6875rem 1.25rem;
+    font-family: var(--font-display);
+    font-size: 1.0625rem;
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    cursor: pointer;
+    transition:
+      background-color 0.25s ease,
+      color 0.25s ease;
+  }
+  .btn > i {
+    font-size: 1.125rem;
+    transition: transform 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+  .btn:hover > i {
+    transform: translateX(3px);
+  }
+  .btn-primary {
+    background-color: var(--color-matrifer-cyan);
+    color: var(--color-ink);
+  }
+  .btn-primary:hover {
+    background-color: #ffffff;
+  }
+  .btn-light {
+    min-width: 15.5rem;
+    background-color: #ffffff;
+    color: var(--color-ink);
+  }
+  .btn-light:hover {
+    background-color: var(--color-matrifer-cyan);
+  }
+  .btn-ink {
+    min-width: 15.5rem;
+    background-color: var(--color-ink);
+    color: #ffffff;
+  }
+  .btn-ink:hover {
+    background-color: #ffffff;
+    color: var(--color-ink);
+  }
+  .link-arrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--fg);
+  }
+  .link-arrow > i {
+    transition: transform 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+  .link-arrow:hover > i {
+    transform: translateX(3px);
+  }
+  :where(a, button, input, textarea):focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 3px;
+  }
+
+  /* Dibujos técnicos en línea */
+  .drawing {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+    fill: none;
+    stroke: var(--draw, rgba(255, 255, 255, 0.34));
+    stroke-width: 1;
+    stroke-linejoin: round;
+  }
+  .drawing * {
+    vector-effect: non-scaling-stroke;
+  }
+  .drawing .is-faint {
+    stroke: var(--draw-faint, rgba(255, 255, 255, 0.16));
+  }
+  .drawing .is-accent {
+    fill: var(--color-matrifer-cyan);
+    stroke: none;
+  }
+  .drawing .is-solid {
+    fill: var(--bg);
+  }
+
+  /* Scroll-reveal: solo cuando hay JS y movimiento permitido */
   .js .reveal {
+    opacity: 0;
+    transform: translateY(1rem);
+    transition:
+      opacity 0.65s cubic-bezier(0.215, 0.61, 0.355, 1),
+      transform 0.65s cubic-bezier(0.19, 1, 0.22, 1);
+    transition-delay: calc(var(--d, 0) * 100ms);
+  }
+  .js .reveal.is-visible {
     opacity: 1;
     transform: none;
-    transition: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .js .reveal {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
   }
 }
 
@@ -92,17 +330,4 @@ html {
   html {
     scroll-behavior: smooth;
   }
-}
-
-/* Elementos de vidrio esmerilado */
-.glass-panel {
-  border-radius: 20px;
-  background: linear-gradient(0deg, rgba(191, 191, 191, 0.6), rgba(191, 191, 191, 0.6)),
-    rgba(255, 255, 255, 0.75);
-  background-blend-mode: darken, lighten;
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
-  box-shadow: 1.25px 0px 0px -0.75px #dbdbdb, -1.25px 0px 0px -0.75px #dbdbdb,
-    0px 0px 0px 0.5px #dbdbdb, 0px 18px 48px rgba(0, 0, 0, 0.25),
-    inset 0px 40px 10px -40px #282828, inset 0px -40px 10px -40px #282828;
 }

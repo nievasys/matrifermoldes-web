@@ -32,7 +32,7 @@ const { title, description } = Astro.props
 		<title>{title}</title>
 		<script is:inline>document.documentElement.classList.add("js");</script>
 	</head>
-	<body class="font-sans antialiased">
+	<body class="tone-dark font-sans antialiased">
 		<slot />
 		<script>
 			const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -49,12 +49,15 @@ const { title, description } = Astro.props
 							}
 						}
 					},
-					{ threshold: 0.15 }
+					{ threshold: 0.12, rootMargin: "0px 0px -6% 0px" }
 				);
 				reveal.forEach((el) => io.observe(el));
 			}
 		</script>
-	<script>
+		<script>
+			import "@/scripts/motion";
+		</script>
+		<script>
 			document.addEventListener("click", (event) => {
 				const target = event.target as Element | null;
 				const anchor = target?.closest?.('a[href^="#"]');
@@ -72,10 +75,7 @@ const { title, description } = Astro.props
 				} else {
 					window.scrollTo({ top, behavior: "smooth" });
 				}
-				const menu = document.getElementById("mobile-menu");
-				if (menu && !menu.classList.contains("hidden")) {
-					document.getElementById("menu-toggle")?.click();
-				}
+				document.dispatchEvent(new CustomEvent("nav:close"));
 			});
 		</script>
 	</body>
@@ -86,6 +86,8 @@ const { title, description } = Astro.props
 	body {
 		margin: 0;
 		width: 100%;
-		height: 100%;
+	}
+	body {
+		overflow-x: clip;
 	}
 </style>
