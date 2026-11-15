@@ -1,0 +1,271 @@
+---
+// Molde de inyección de dos placas en proyección isométrica (30°), dibujado en línea fina.
+// Ejes del modelo: X ancho (abajo a la derecha), Y apertura del molde (abajo a la izquierda,
+// hacia el observador), Z altura. Las caras visibles son +X, +Y y +Z.
+// Se dibuja de atrás hacia adelante; las caras .is-solid tapan lo que queda detrás.
+interface Props {
+  class?: string;
+}
+const { class: className = "" } = Astro.props;
+
+type V = [number, number, number];
+type P2 = [number, number];
+type Axis = "x" | "y" | "z";
+type Shape =
+  | { kind: "poly"; points: string; cls?: string }
+  | { kind: "line"; a: P2; b: P2; cls?: string; dash?: boolean };
+
+const COS = Math.cos(Math.PI / 6);
+const OX = 400;
+const OY = 300;
+
+const pr = ([x, y, z]: V): P2 => [OX + (x - y) * COS, OY + (x + y) * 0.5 - z];
+const fmt = (pts: P2[]) => pts.map(([a, b]) => `${a.toFixed(1)},${b.toFixed(1)}`).join(" ");
+const poly = (vs: V[], cls?: string): Shape => ({ kind: "poly", points: fmt(vs.map(pr)), cls });
+const line = (a: V, b: V, cls?: string, dash = false): Shape => ({
+  kind: "line",
+  a: pr(a),
+  b: pr(b),
+  cls,
+  dash,
+});
+
+// Punto de una circunferencia contenida en el plano perpendicular al eje dado.
+const onCircle = ([x, y, z]: V, r: number, axis: Axis, t: number): V => {
+  const u = r * Math.cos(t);
+  const v = r * Math.sin(t);
+  if (axis === "x") return [x, y + u, z + v];
+  if (axis === "y") return [x + u, y, z + v];
+  return [x + u, y + v, z];
+};
+const ring = (c: V, r: number, axis: Axis): V[] => {
+  const n = r > 20 ? 48 : r > 8 ? 28 : 18;
+  return Array.from({ length: n }, (_, i) => onCircle(c, r, axis, (i / n) * Math.PI * 2));
+};
+const circle = (c: V, r: number, axis: Axis, cls?: string) => poly(ring(c, r, axis), cls);
+
+// Envolvente convexa (cadena monótona) para el contorno de los cilindros.
+const hull = (pts: P2[]): P2[] => {
+  const s = [...pts].sort((p, q) => p[0] - q[0] || p[1] - q[1]);
+  const cross = (o: P2, a: P2, b: P2) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
+  const lower: P2[] = [];
+  for (const p of s) {
+    while (lower.length >= 2 && cross(lower[lower.length - 2], lower[lower.length - 1], p) <= 0) lower.pop();
+    lower.push(p);
+  }
+  const upper: P2[] = [];
+  for (const p of s.reverse()) {
+    while (upper.length >= 2 && cross(upper[upper.length - 2], upper[upper.length - 1], p) <= 0) upper.pop();
+    upper.push(p);
+  }
+  return [...lower.slice(0, -1), ...upper.slice(0, -1)];
+};
+
+const shift = ([x, y, z]: V, axis: Axis, d: number): V =>
+  axis === "x" ? [x + d, y, z] : axis === "y" ? [x, y + d, z] : [x, y, z + d];
+
+// Cilindro que crece en sentido positivo del eje (su tapa queda hacia el observador).
+const cylinder = (c: V, axis: Axis, len: number, r: number, cls = "is-solid"): Shape[] => {
+  const tip = shift(c, axis, len);
+  const body = hull([...ring(c, r, axis), ...ring(tip, r, axis)].map(pr));
+  return [
+    { kind: "poly", points: fmt(body), cls },
+    circle(tip, r, axis, cls),
+  ];
+};
+
+// Prisma: solo las tres caras visibles.
+const box = (x0: number, x1: number, y0: number, y1: number, z0: number, z1: number, cls = "is-solid"): Shape[] => [
+  poly([[x0, y0, z1], [x1, y0, z1], [x1, y1, z1], [x0, y1, z1]], cls),
+  poly([[x0, y1, z0], [x1, y1, z0], [x1, y1, z1], [x0, y1, z1]], cls),
+  poly([[x1, y0, z0], [x1, y1, z0], [x1, y1, z1], [x1, y0, z1]], cls),
+];
+
+// Rectángulo sobre una cara frontal (plano Y constante).
+const rectY = (y: number, x0: number, x1: number, z0: number, z1: number, cls?: string) =>
+  poly([[x0, y, z0], [x1, y, z0], [x1, y, z1], [x0, y, z1]], cls);
+
+// Bulón: círculo con cruz.
+const bolt = (c: V, r: number, axis: Axis, cls = "is-solid"): Shape[] => {
+  const q = Math.PI / 4;
+  return [
+    circle(c, r, axis, cls),
+    line(onCircle(c, r * 0.7, axis, q), onCircle(c, r * 0.7, axis, q * 5)),
+    line(onCircle(c, r * 0.7, axis, q * 3), onCircle(c, r * 0.7, axis, q * 7)),
+  ];
+};
+
+// Boca de refrigeración en una cara lateral (plano X constante), con o sin conector.
+const coolingPort = (c: V, fitting: boolean): Shape[] =>
+  fitting
+    ? [circle(c, 8, "x", "is-solid"), ...cylinder(c, "x", 12, 5), circle(shift(c, "x", 12), 2.5, "x")]
+    : [circle(c, 7, "x", "is-solid"), circle(c, 3.5, "x")];
+
+// Medidas del modelo (unidades del viewBox antes de proyectar).
+const W = 280; // ancho de placas
+const H = 260; // alto de placas
+const OV = 24; // voladizo de las placas de sujeción
+const PL = 166; // plano de partición
+
+// ---------- Mitad fija (expulsión + placa porta noyo) ----------
+const fixed: Shape[] = [];
+
+// Placa de sujeción trasera con ranuras de amarre.
+fixed.push(...box(-OV, W + OV, 0, 18, 0, H));
+for (const [x0, x1] of [[-18, -6], [W + 6, W + 18]]) {
+  fixed.push(rectY(18, x0, x1, 46, 96), rectY(18, x0, x1, 164, 214));
+}
+
+// Regla izquierda, placas expulsoras y pernos, regla derecha.
+fixed.push(...box(0, 48, 18, 88, 0, H));
+fixed.push(...box(56, 224, 26, 42, 20, 236));
+fixed.push(...box(56, 224, 42, 54, 20, 236));
+for (const x of [90, 140, 190]) fixed.push(...cylinder([x, 54, 226], "y", 34, 3));
+for (const x of [72, 208]) fixed.push(...cylinder([x, 54, 222], "y", 34, 5));
+fixed.push(...box(W - 48, W, 18, 88, 0, H));
+fixed.push(...bolt([W, 53, 40], 6, "x"), ...bolt([W, 53, H - 40], 6, "x"));
+
+// Placa soporte y placa porta noyo.
+fixed.push(...box(0, W, 88, 106, 0, H));
+fixed.push(...box(0, W, 106, PL, 0, H));
+fixed.push(circle([W / 2, 136, H], 9, "z", "is-solid"), circle([W / 2, 136, H], 4.5, "z"));
+fixed.push(...coolingPort([W, 136, 50], true), ...coolingPort([W, 136, 210], false));
+fixed.push(...box(W, W + 10, 146, PL, 112, 148));
+
+// Cara de partición: alojamiento del inserto y sus tornillos.
+fixed.push(rectY(PL, 60, 220, 50, 210, "is-faint"));
+for (const x of [72, 208]) for (const z of [62, 198]) fixed.push(...bolt([x, PL, z], 5, "y"));
+
+// Noyo con las puntas de los expulsores.
+fixed.push(...box(100, 180, PL, 196, 90, 170));
+for (const x of [116, 164]) for (const z of [106, 154]) fixed.push(circle([x, 196, z], 3, "y"));
+
+// Contorno de la pieza inyectada sobre el noyo: pestaña, cuerpo y bebedero.
+fixed.push(...box(80, 200, PL, 172, 70, 190, "is-faint"));
+fixed.push(...box(92, 188, 172, 202, 82, 178, ""));
+fixed.push(...cylinder([W / 2, 202, 130], "y", 8, 12, ""));
+
+// Columnas guía con sus bujes, de atrás hacia adelante.
+const pillars: V[] = [
+  [24, PL, 24],
+  [24, PL, H - 24],
+  [W - 24, PL, 24],
+  [W - 24, PL, H - 24],
+].sort((a, b) => a[0] + a[2] - (b[0] + b[2])) as V[];
+for (const p of pillars) {
+  fixed.push(...cylinder(p, "y", 6, 16));
+  fixed.push(...cylinder(p, "y", 64, 10));
+  fixed.push(circle(shift(p, "y", 64), 6.5, "y"));
+}
+
+// Referencia del plano de partición.
+fixed.push(
+  line([W + OV + 10, PL, 0], [W + OV + 70, PL, 0], "is-faint", true),
+  line([W, PL, -10], [W, PL, -46], "is-faint", true),
+);
+
+// Punto de inyección: único detalle de acento.
+const gate = fmt(ring([W / 2, 210, 130], 3.5, "y").map(pr));
+
+// ---------- Mitad móvil (placa porta cavidad + sujeción delantera) ----------
+const door: Shape[] = [];
+
+door.push(...box(0, W, PL, 226, 0, H));
+door.push(circle([W / 2, 196, H], 9, "z", "is-solid"), circle([W / 2, 196, H], 4.5, "z"));
+door.push(...coolingPort([W, 196, 50], true), ...coolingPort([W, 196, 210], false));
+door.push(...box(W, W + 12, PL, 186, 108, 152));
+door.push(line([W + 12, 176, 108], [W + 12, 176, 152], "is-faint"));
+
+door.push(...box(-OV, W + OV, 226, 244, 0, H));
+for (const [x0, x1] of [[-18, -6], [W + 6, W + 18]]) {
+  door.push(rectY(244, x0, x1, 46, 96), rectY(244, x0, x1, 164, 214));
+}
+for (const x of [36, W - 36]) for (const z of [36, H / 2, H - 36]) door.push(...bolt([x, 244, z], 8, "y"));
+
+// Anillo de centrado y buje bebedero.
+door.push(...cylinder([W / 2, 244, H / 2], "y", 10, 46));
+door.push(circle([W / 2, 254, H / 2], 32, "y"));
+for (let i = 0; i < 4; i++) {
+  door.push(...bolt(onCircle([W / 2, 254, H / 2], 39, "y", Math.PI / 4 + (i * Math.PI) / 2), 3.5, "y"));
+}
+door.push(...cylinder([W / 2, 254, H / 2], "y", 4, 14));
+door.push(circle([W / 2, 258, H / 2], 5, "y"));
+---
+
+<svg
+  class:list={["drawing", className]}
+  data-draw
+  data-mold
+  viewBox="0 0 720 620"
+  aria-hidden="true"
+  focusable="false"
+>
+  {fixed.map((s) =>
+    s.kind === "poly" ? (
+      <polygon points={s.points} class={s.cls || undefined} />
+    ) : (
+      <line
+        x1={s.a[0].toFixed(1)}
+        y1={s.a[1].toFixed(1)}
+        x2={s.b[0].toFixed(1)}
+        y2={s.b[1].toFixed(1)}
+        class={s.cls}
+        stroke-dasharray={s.dash ? "4 4" : undefined}
+      />
+    ),
+  )}
+  <polygon points={gate} class="is-accent" />
+  <g data-mold-door>
+    {door.map((s) =>
+      s.kind === "poly" ? (
+        <polygon points={s.points} class={s.cls || undefined} />
+      ) : (
+        <line
+          x1={s.a[0].toFixed(1)}
+          y1={s.a[1].toFixed(1)}
+          x2={s.b[0].toFixed(1)}
+          y2={s.b[1].toFixed(1)}
+          class={s.cls}
+          stroke-dasharray={s.dash ? "4 4" : undefined}
+        />
+      ),
+    )}
+  </g>
+</svg>
+
+<script>
+  // El molde se abre: la mitad delantera se desplaza sobre el eje isométrico y deja ver el noyo.
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const molds = Array.from(document.querySelectorAll<SVGSVGElement>("svg[data-mold]"));
+
+  if (!reduce && molds.length) {
+    const mm = gsap.matchMedia();
+    mm.add("(min-width: 768px)", () => {
+      const cleanups = molds.map((svg) => {
+        const door = svg.querySelector<SVGGElement>("[data-mold-door]");
+        if (!door) return () => {};
+        const timeline = gsap.timeline({ paused: true, delay: 0.5 });
+        timeline
+          .to(door, { x: -150, y: 86, duration: 2.6, ease: "power3.inOut" }, 0)
+          .to(door, { opacity: 0.25, duration: 1, ease: "power1.inOut" }, 1.6);
+        const trigger = ScrollTrigger.create({
+          trigger: svg,
+          start: "top 75%",
+          onEnter: () => timeline.restart(true),
+          onLeaveBack: () => timeline.pause(0),
+        });
+        return () => {
+          trigger.kill();
+          timeline.kill();
+          gsap.set(door, { clearProps: "transform,opacity" });
+        };
+      });
+      return () => cleanups.forEach((cleanup) => cleanup());
+    });
+  }
+</script>

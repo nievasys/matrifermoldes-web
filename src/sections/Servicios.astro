@@ -1,34 +1,33 @@
 ---
-import SectionBadge from '@/components/SectionBadge.astro';
-
+// Servicios en filas que se apilan y colapsan a su título al hacer scroll (motion.ts).
 const servicios = [
   {
     title: "Inyección",
-    image: "inyeccion.webp",
+    image: "/inyeccion.webp",
     description:
       "Nos dedicamos principalmente a la inyección de termoplásticos para terceros con máquinas inyectoras desde 50 TN hasta 800 TN.",
   },
   {
     title: "Matricería",
-    image: "matriceria.webp",
+    image: "/matriceria.webp",
     description:
       "Realizamos trabajos de matricería para la creación de moldes desde el diseño hasta el producto final y asesoramiento personalizado de cavidades en los moldes para un mayor rendimiento en su producción. Los moldes son construidos en acero con el alojamiento para determinada cantidad de piezas de plástico inyectado.",
   },
   {
     title: "CNC",
-    image: "cnc.webp",
+    image: "/cnc.webp",
     description:
       "Maquinaria de control numérico para mecanizado de alta velocidad y precisión, garantizando la dimensionalidad exacta de cada componente.",
   },
   {
     title: "Diseño CAD/CAM",
-    image: "cad.webp",
+    image: "/cad.webp",
     description:
       "Contamos con un departamento de diseño y programación para un producto nuevo o el que necesita el cliente brindándole asesoramiento por la cantidad de cavidades para lograr la mayor eficiencia.",
   },
   {
     title: "Electroerosión",
-    image: "electroerosion.webp",
+    image: "/electroerosion.webp",
     description:
       "Ofrecemos servicios de rectificado en máquina tangencial y electroerosión por penetración hasta 50 A.",
   },
@@ -36,52 +35,45 @@ const servicios = [
 ---
 
 <section
-  class="border-t border-stroke-subtle bg-void-alt py-24"
   id="servicios"
+  class="tone-accent relative z-10 pb-16 pt-20 lg:pb-24 lg:pt-32"
   aria-label="Servicios de Matrifer Moldes"
 >
-  <div class="mx-auto w-full max-w-[1720px] px-6 lg:px-12">
-    <!-- Título de sección -->
-    <div class="mb-16 max-w-3xl">
-      <div class="mb-4">
-        <SectionBadge label="SERVICIOS Y APLICACIONES" />
-      </div>
-      <h2
-        class="font-display text-3xl font-semibold leading-tight tracking-tight text-white sm:text-4xl lg:text-[42px]"
-      >
-        Ofrecemos soluciones integrales donde la precisión está asegurada y el
-        rendimiento, diseñado.
-      </h2>
-    </div>
+  <div class="shell">
+    <h2 class="t-display">Servicios y aplicaciones</h2>
+    <p class="t-sub2 mt-6 max-w-[36rem] text-tone-fg lg:mt-8">
+      Ofrecemos soluciones integrales donde la precisión está asegurada y el rendimiento,
+      diseñado.
+    </p>
 
-    <!-- Grid de tarjetas de servicio -->
-    <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-      {servicios.map((servicio, index) => (
-        <div class="group reveal cursor-pointer space-y-3" style={`--d:${index}`}>
-          <div class="overflow-hidden rounded-xl border border-stroke-subtle bg-void-surface">
-            <img
-              src={servicio.image}
-              alt={`Servicio de ${servicio.title}`}
-              class="aspect-[4/5] w-full object-cover transition-transform duration-700 group-hover:scale-105"
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
-          <h3
-            class="flex items-center justify-between font-display text-xl font-semibold text-white transition-colors group-hover:text-matrifer-cyan-light"
-          >
-            {servicio.title}
-            <span
-              class="text-xs text-matrifer-cyan opacity-0 transition-opacity group-hover:opacity-100"
-              aria-hidden="true"
-              >↗</span
-            >
-          </h3>
-          <p class="font-sans text-sm font-normal leading-relaxed text-content-secondary">
-            {servicio.description}
-          </p>
-        </div>
-      ))}
+    <div data-stack-track class="mt-14 lg:mt-20">
+      <ul data-stack-list>
+        {servicios.map((servicio) => (
+          <li data-stack-card class="border-t border-tone-line last:border-b">
+            <div class="grid grid-cols-12 gap-x-5 gap-y-5 py-8 lg:py-0 lg:pt-10">
+              <div class="col-span-12 flex items-start gap-4 lg:col-span-4 lg:gap-10">
+                <span aria-hidden="true" class="mt-[0.7em] inline-block h-2 w-2 shrink-0 bg-tone-fg"></span>
+                <h3 class="t-sub2">{servicio.title}</h3>
+              </div>
+              <p
+                data-stack-content
+                class="t-body-lg col-span-12 max-w-[30rem] lg:col-span-4 lg:col-start-5"
+              >
+                {servicio.description}
+              </p>
+              <div class="col-span-12 lg:col-span-3 lg:col-start-10 lg:flex lg:justify-end">
+                <img
+                  src={servicio.image}
+                  alt={`Servicio de ${servicio.title}`}
+                  class="aspect-[3/2] w-full object-cover lg:max-w-[360px]"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+            </div>
+          </li>
+        ))}
+      </ul>
     </div>
   </div>
 </section>

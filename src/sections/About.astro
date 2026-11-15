@@ -1,47 +1,121 @@
 ---
-// Imagen de capacidad industrial. Reemplazar con imagen propia.
-const capabilityImage = "/about_image.webp";
-import SectionBadge from "@/components/SectionBadge.astro";
+// Bloque de experiencia: declaración a la izquierda y video de planta a la derecha.
+import SectionLabel from "@/components/SectionLabel.astro";
+
+const stillImage = "/hero_image.webp";
+const whatsappNumber = "5491154200297";
+const defaultMessage =
+  "Hola! Vi la página web de Matrifer Moldes y quería consultar por los servicios de inyección de plásticos.";
+const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(defaultMessage)}`;
 ---
 
-<section
-  class="relative border-t border-stroke-subtle bg-void-base pb-20 pt-24"
-  id="about"
-  aria-label="Sobre Matrifer Moldes"
->
-  <div class="mx-auto w-full max-w-[1720px] px-6 lg:px-12">
-    <!-- Tag y declaración principal -->
-    <div class="mb-12 max-w-4xl">
-      <div class="mb-4">
-        <SectionBadge label="CAPACIDAD INDUSTRIAL Y TECNOLOGÍA" />
+<section id="about" class="tone-paper" aria-label="Sobre Matrifer Moldes">
+  <div class="shell grid grid-cols-12 gap-x-5 lg:min-h-[85dvh]">
+    <!-- Columna de texto -->
+    <div
+      class="col-span-12 flex flex-col pb-12 pt-16 lg:col-span-7 lg:border-r lg:border-tone-line lg:pb-16 lg:pr-10 lg:pt-20"
+    >
+      <SectionLabel label="Capacidad industrial y tecnología" />
+      <h2 class="t-statement mt-10 max-w-[38rem] lg:mt-12">
+        Más de 30 años de trayectoria en el rubro nos definen, marcada experiencia y
+        equipo/herramientas de trabajo profesional.
+      </h2>
+
+      <div class="mt-14 lg:mt-auto lg:pt-16">
+        <span class="rule" data-rule></span>
+        <div
+          class="mt-8 flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between lg:mt-10"
+        >
+          <p class="t-body-lg max-w-[21rem]">
+            Personal capacitado y especializado en dichas tareas.
+          </p>
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="link-arrow self-start"
+          >
+            Solicitar presupuesto
+            <i class="ph ph-arrow-elbow-down-right" aria-hidden="true"></i>
+          </a>
+        </div>
       </div>
-      <p
-        class="font-sans text-2xl font-light leading-relaxed text-white sm:text-3xl lg:text-[34px]"
-      >
-        Más de 30 años de trayectoria en el rubro nos definen, marcada
-        experiencia y equipo/herramientas de trabajo profesional.{" "}
-        <span class="text-content-secondary">
-          Personal capacitado y especializado en dichas tareas.
-        </span>
-      </p>
     </div>
 
-    <!-- Panel tecnológico 3D -->
-    <div
-      class="group relative w-full overflow-hidden rounded-xl border border-stroke-brand bg-void-surface shadow-2xl"
-    >
-      <img
-        src={capabilityImage}
-        alt="Panel de capacidad industrial y telemetría de Matrifer Moldes"
-        class="h-auto w-full object-cover transition-transform duration-700 group-hover:scale-[1.01]"
-        loading="lazy"
-        decoding="async"
-      />
-      <div
-        class="pointer-events-none absolute inset-0 bg-gradient-to-t from-void-base/70 via-transparent to-transparent"
-        aria-hidden="true"
-      >
+    <!-- Media: video de planta a toda la altura de la sección -->
+    <div class="relative col-span-12 pb-16 lg:col-span-5 lg:col-start-8 lg:pb-0">
+      <div class="relative aspect-[4/5] overflow-hidden bg-ink lg:absolute lg:inset-0 lg:aspect-auto">
+        <video
+          class="about-video absolute inset-0 h-full w-full object-cover object-center"
+          autoplay
+          muted
+          loop
+          playsinline
+          preload="metadata"
+          poster={stillImage}
+          aria-hidden="true"
+        >
+          <source src="/hero-matrifermoldes.mp4" type="video/mp4" />
+        </video>
+        <img
+          src={stillImage}
+          alt=""
+          role="presentation"
+          class="about-still absolute inset-0 hidden h-full w-full object-cover object-center"
+          loading="lazy"
+          decoding="async"
+        />
+
+        <!-- Control de pausa del video -->
+        <button
+          type="button"
+          class="about-video-toggle absolute bottom-4 right-4 z-10 inline-flex h-11 w-11 items-center justify-center rounded-[4px] bg-black text-white transition-colors duration-200 hover:bg-ink"
+          aria-label="Pausar video"
+          aria-pressed="false"
+        >
+          <i class="ph ph-play hidden text-lg" aria-hidden="true"></i>
+          <i class="ph ph-pause text-lg" aria-hidden="true"></i>
+        </button>
       </div>
     </div>
   </div>
 </section>
+
+<script>
+  const aboutVideo = document.querySelector<HTMLVideoElement>(".about-video");
+  const toggle = document.querySelector<HTMLButtonElement>(".about-video-toggle");
+  const playIcon = document.querySelector(".about-video-toggle .ph-play");
+  const pauseIcon = document.querySelector(".about-video-toggle .ph-pause");
+
+  if (aboutVideo && toggle && playIcon && pauseIcon) {
+    const sync = () => {
+      const paused = aboutVideo.paused;
+      toggle.setAttribute("aria-pressed", String(!paused));
+      toggle.setAttribute("aria-label", paused ? "Reproducir video" : "Pausar video");
+      playIcon.classList.toggle("hidden", !paused);
+      pauseIcon.classList.toggle("hidden", paused);
+    };
+    aboutVideo.addEventListener("play", sync);
+    aboutVideo.addEventListener("pause", sync);
+    toggle.addEventListener("click", () => {
+      if (aboutVideo.paused) {
+        void aboutVideo.play();
+      } else {
+        aboutVideo.pause();
+      }
+    });
+    sync();
+  }
+</script>
+
+<style>
+  @media (prefers-reduced-motion: reduce) {
+    .about-video,
+    .about-video-toggle {
+      display: none;
+    }
+    .about-still {
+      display: block;
+    }
+  }
+</style>
