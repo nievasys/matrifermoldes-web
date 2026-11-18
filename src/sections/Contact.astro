@@ -1,54 +1,179 @@
 ---
-import SectionLabel from "@/components/SectionLabel.astro";
-
+// Contacto: réplica de https://www.podiumautomation.com/contact con los datos de MatriFer.
 const destinatario = "matrifer@hotmail.com";
+const telefono = { label: "+54 9 11 5420-0297", href: "https://wa.me/5491154200297" };
+const direccion = ["Colectora Sur Acceso Oeste 9924,", "La Reja, Moreno, Buenos Aires"];
+const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+  "Matrifer Moldes, Colectora Sur Acceso Oeste 9924, La Reja, Moreno, Buenos Aires",
+)}`;
+
+// Prefijos de la región primero; Argentina por defecto.
+const prefijos = [
+  { code: "+54", label: "+54" },
+  { code: "+598", label: "+598" },
+  { code: "+56", label: "+56" },
+  { code: "+55", label: "+55" },
+  { code: "+595", label: "+595" },
+  { code: "+591", label: "+591" },
+  { code: "+51", label: "+51" },
+  { code: "+52", label: "+52" },
+  { code: "+1", label: "+1" },
+  { code: "+34", label: "+34" },
+];
+
+// Campo de línea: el texto del label hace de placeholder y sube al escribir.
+const field =
+  "peer block w-full rounded-none border-0 border-b border-tone-line bg-transparent px-0 pb-2 pt-1 text-[1.125rem] leading-[1.4] text-tone-fg outline-none transition-colors duration-200 placeholder:text-transparent focus:border-tone-fg";
+const floating =
+  "pointer-events-none absolute left-0 top-1 origin-left t-label text-tone-fg transition-[transform,opacity] duration-200 peer-focus:-translate-y-6 peer-focus:scale-[0.85] peer-focus:opacity-70 peer-[:not(:placeholder-shown)]:-translate-y-6 peer-[:not(:placeholder-shown)]:scale-[0.85] peer-[:not(:placeholder-shown)]:opacity-70";
 ---
 
-<section id="contacto" class="tone-paper pb-28 pt-28" aria-label="Contacto">
+<section id="contacto" class="tone-dark pb-24 pt-28 lg:pb-[9.5rem] lg:pt-[9rem]" aria-label="Contacto">
   <div class="shell">
-    <div class="grid grid-cols-12 gap-x-5 gap-y-16">
-      <div class="col-span-12 lg:col-span-5">
-        <SectionLabel label="Contacto" />
-        <h2 class="t-heading reveal mt-8">Estamos abiertos a proyectos nuevos</h2>
-        <p class="t-body-lg reveal mt-8 max-w-[28rem] text-tone-muted" style="--d:1">
-          Si tenés algún proyecto de inyección de plásticos en mente, recomendamos
-          que converses con nosotros para ofrecerte el mejor asesoramiento.
-        </p>
-      </div>
+    <!-- Encabezado: título a la izquierda, bajada a la derecha -->
+    <div class="grid grid-cols-12 gap-x-5 gap-y-8">
+      <h2 class="t-display reveal col-span-12 lg:col-span-6">Contacto</h2>
+      <p
+        class="t-sub2 reveal col-span-12 max-w-[30rem] lg:col-span-5 lg:col-start-8 lg:mt-1"
+        style="--d:1"
+      >
+        Si tenés algún proyecto de inyección de plásticos en mente, recomendamos
+        que converses con nosotros para ofrecerte el mejor asesoramiento.
+      </p>
+    </div>
 
-      <form id="contact-form" class="reveal col-span-12 grid gap-12 lg:col-span-6 lg:col-start-7" style="--d:2" novalidate>
-        <div class="flex flex-col gap-2">
-          <label for="nombre" class="t-label text-tone-fg">
-            Nombre completo
-          </label>
+    <span class="rule mt-12 lg:mt-[2.875rem]" data-rule></span>
+
+    <div class="mt-10 grid grid-cols-12 gap-x-5 gap-y-16">
+      <!-- Datos de contacto -->
+      <address class="reveal col-span-12 not-italic lg:col-span-7">
+        <ul class="t-sub2 flex flex-col">
+          <li>
+            <a
+              href={`mailto:${destinatario}`}
+              class="inline-flex items-center gap-2 transition-opacity duration-200 hover:opacity-70"
+            >
+              {destinatario}
+              <i class="ph ph-arrow-up-right text-[1.125rem]" aria-hidden="true"></i>
+            </a>
+          </li>
+          <li class="mt-1">
+            <a
+              href={telefono.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="transition-opacity duration-200 hover:opacity-70"
+            >
+              {telefono.label}
+            </a>
+          </li>
+          <li class="mt-[1.875rem]">
+            <a
+              href={mapsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="transition-opacity duration-200 hover:opacity-70"
+            >
+              {direccion[0]}<br />{direccion[1]}
+            </a>
+          </li>
+        </ul>
+      </address>
+
+      <!-- Formulario -->
+      <form
+        id="contact-form"
+        class="reveal col-span-12 flex flex-col gap-10 pt-2 lg:col-span-5 lg:col-start-8"
+        style="--d:1"
+        novalidate
+      >
+        <label class="relative block">
           <input
             id="nombre"
             name="nombre"
             type="text"
             required
             maxlength="60"
-            placeholder="Tu nombre"
-            class="w-full rounded-none border-0 border-b border-tone-line bg-transparent px-0 py-3 t-body text-tone-fg placeholder:text-tone-muted outline-none transition-[border-color,box-shadow] duration-200 focus:border-tone-fg focus:shadow-[0_1px_0_0_var(--fg)]"
+            autocomplete="name"
+            placeholder="Nombre"
+            class={field}
           />
+          <span class={floating}>Nombre *</span>
+        </label>
+
+        <label class="relative block">
+          <input
+            id="email"
+            name="email"
+            type="email"
+            required
+            maxlength="120"
+            autocomplete="email"
+            placeholder="Email"
+            class={field}
+          />
+          <span class={floating}>Email *</span>
+        </label>
+
+        <label class="relative block">
+          <input
+            id="empresa"
+            name="empresa"
+            type="text"
+            maxlength="80"
+            autocomplete="organization"
+            placeholder="Empresa"
+            class={field}
+          />
+          <span class={floating}>Empresa</span>
+        </label>
+
+        <div class="flex items-end gap-4">
+          <label class="relative block w-[4.5rem] shrink-0">
+            <span class="sr-only">Prefijo telefónico</span>
+            <select
+              id="prefijo"
+              name="prefijo"
+              autocomplete="tel-country-code"
+              class="block w-full cursor-pointer appearance-none rounded-none border-0 border-b border-tone-line bg-transparent py-2 pr-5 text-[0.875rem] text-tone-fg outline-none transition-colors duration-200 focus:border-tone-fg"
+            >
+              {prefijos.map((p) => <option value={p.code} class="bg-ink text-white">{p.label}</option>)}
+            </select>
+            <i
+              class="ph ph-caret-down pointer-events-none absolute bottom-2.5 right-0 text-[0.875rem]"
+              aria-hidden="true"
+            ></i>
+          </label>
+          <label class="relative block grow lg:mr-[1.375rem]">
+            <input
+              id="telefono"
+              name="telefono"
+              type="tel"
+              required
+              maxlength="30"
+              autocomplete="tel-national"
+              placeholder="Teléfono"
+              class={field}
+            />
+            <span class={floating}>Teléfono *</span>
+          </label>
         </div>
 
-        <div class="flex flex-col gap-2">
-          <label for="mensaje" class="t-label text-tone-fg">
-            Mensaje
-          </label>
+        <label class="relative block">
           <textarea
             id="mensaje"
             name="mensaje"
             required
-            rows="4"
+            rows="5"
             maxlength="2000"
-            placeholder="¿En qué industria estás? ¿Cuál es tu producto o servicio? ¿Qué querés lograr con él?"
-            class="min-h-[140px] resize-y w-full rounded-none border-0 border-b border-tone-line bg-transparent px-0 py-3 t-body text-tone-fg placeholder:text-tone-muted outline-none transition-[border-color,box-shadow] duration-200 focus:border-tone-fg focus:shadow-[0_1px_0_0_var(--fg)]"
+            placeholder="Tu mensaje"
+            class={`${field} h-[8.75rem] resize-none`}
           ></textarea>
-        </div>
+          <span class={floating}>Tu mensaje *</span>
+        </label>
 
-        <div>
-          <button type="submit" class="btn btn-ink">
+        <div class="mt-6">
+          <button type="submit" class="btn btn-light">
             Enviar consulta
             <i class="ph ph-arrow-elbow-down-right" aria-hidden="true"></i>
           </button>
@@ -62,10 +187,23 @@ const destinatario = "matrifer@hotmail.com";
   const form = document.querySelector("#contact-form");
   form?.addEventListener("submit", (e) => {
     e.preventDefault();
-    const nombre = document.querySelector("#nombre")?.value.trim();
-    const mensaje = document.querySelector("#mensaje")?.value.trim();
-    if (!nombre || !mensaje) return;
-    const body = `Hola Matrifer,\n\nSoy ${nombre} y quería consultarte sobre ${mensaje}.`;
+    if (!form.reportValidity()) return;
+    const value = (id) => document.querySelector(`#${id}`)?.value.trim() ?? "";
+    const nombre = value("nombre");
+    const email = value("email");
+    const empresa = value("empresa");
+    const telefono = `${value("prefijo")} ${value("telefono")}`;
+    const mensaje = value("mensaje");
+    const body = [
+      "Hola Matrifer,",
+      "",
+      `Soy ${nombre}${empresa ? `, de ${empresa}` : ""}.`,
+      "",
+      mensaje,
+      "",
+      `Email: ${email}`,
+      `Teléfono: ${telefono}`,
+    ].join("\n");
     window.location.href = `mailto:${destinatario}?subject=${encodeURIComponent("Consulta web - Matrifer Moldes")}&body=${encodeURIComponent(body)}`;
   });
 </script>

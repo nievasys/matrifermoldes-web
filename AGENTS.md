@@ -69,7 +69,7 @@ Non-negotiables from the skill:
 - URL structure and slugs, in particular `/`.
 - Anchor IDs: `#about`, `#servicios`, `#casos`, `#noticias`, `#ubicacion`, `#contacto`.
 - Primary nav labels (Header and Footer).
-- Form field names and order in the Contact form (`nombre`, `mensaje`).
+- Form field names and order in the Contact form (`nombre`, `email`, `empresa`, `prefijo`, `telefono`, `mensaje`). The form is a copy of https://www.podiumautomation.com/contact and submits through `mailto:`.
 - Brand logo/wordmark (`public/logo.svg`, `favicon.svg`).
 - Legal/consent copy in the Footer.
 - Copy voice: direct, technical, es-AR. Visual changes are not content rewrites. Fix grammar bugs, do not rewrite copy.
