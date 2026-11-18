@@ -1,11 +1,6 @@
 ---
-// Casos de estudio: declaración, tres columnas con foto y ficha técnica, cierre con CTA.
+// Casos de estudio: declaración y tres columnas con foto y ficha técnica.
 import SectionLabel from "@/components/SectionLabel.astro";
-
-const whatsappNumber = "5491154200297";
-const defaultMessage =
-  "Hola! Vi la página web de Matrifer Moldes y quería consultar por los servicios de inyección de plásticos.";
-const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(defaultMessage)}`;
 
 const casos = [
   {
@@ -50,7 +45,7 @@ const casos = [
 ];
 ---
 
-<section id="casos" class="tone-dark relative overflow-hidden pb-12 pt-20 lg:pt-28" aria-label="Casos de estudio">
+<section id="casos" class="tone-dark relative overflow-hidden pb-24 pt-20 lg:pb-32 lg:pt-28" aria-label="Casos de estudio">
   <!-- Líneas decorativas que bajan desde el borde superior, como los cables de la referencia -->
   <div aria-hidden="true" class="pointer-events-none absolute inset-x-0 top-0 hidden h-56 lg:block">
     <span class="absolute left-[67%] top-0 h-full w-px bg-matrifer-cyan/50"></span>
@@ -86,18 +81,5 @@ const casos = [
         </li>
       ))}
     </ul>
-
-    <div class="mt-24 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between lg:mt-36">
-      <h2 class="t-heading">Ingeniería aplicada</h2>
-      <a
-        href={whatsappUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="link-arrow self-start sm:self-auto sm:pb-2"
-      >
-        Solicitar presupuesto
-        <i class="ph ph-arrow-elbow-down-right" aria-hidden="true"></i>
-      </a>
-    </div>
   </div>
 </section>
