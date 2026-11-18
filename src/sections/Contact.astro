@@ -21,11 +21,12 @@ const prefijos = [
   { code: "+34", label: "+34" },
 ];
 
-// Campo de línea: el texto del label hace de placeholder y sube al escribir.
+// Campo de línea: el texto del label queda dentro del campo, como un placeholder,
+// también con foco; se oculta recién cuando hay texto.
 const field =
   "peer block w-full rounded-none border-0 border-b border-tone-line bg-transparent px-0 pb-2 pt-1 text-[1.125rem] leading-[1.4] text-tone-fg outline-none transition-colors duration-200 placeholder:text-transparent focus:border-tone-fg";
 const floating =
-  "pointer-events-none absolute left-0 top-1 origin-left t-label text-tone-fg transition-[transform,opacity] duration-200 peer-focus:-translate-y-6 peer-focus:scale-[0.85] peer-focus:opacity-70 peer-[:not(:placeholder-shown)]:-translate-y-6 peer-[:not(:placeholder-shown)]:scale-[0.85] peer-[:not(:placeholder-shown)]:opacity-70";
+  "pointer-events-none absolute left-0 top-1 text-[1.0625rem] font-normal leading-[1.5] text-tone-fg/85 peer-[:not(:placeholder-shown)]:opacity-0";
 ---
 
 <section id="contacto" class="tone-dark pb-24 pt-28 lg:pb-[9.5rem] lg:pt-[9rem]" aria-label="Contacto">
