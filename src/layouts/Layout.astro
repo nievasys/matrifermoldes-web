@@ -67,6 +67,8 @@ const { title, description } = Astro.props
 				const section = document.querySelector(selector);
 				if (!section) return;
 				event.preventDefault();
+				// Primero se cierra el menú móvil, que bloquea el scroll mientras está abierto
+				document.dispatchEvent(new CustomEvent("nav:close"));
 				const offset = 96;
 				// Posición de layout, sin transforms: las secciones con escala o
 				// desplazamiento por scroll darían un destino corrido.
@@ -83,7 +85,6 @@ const { title, description } = Astro.props
 				} else {
 					window.scrollTo({ top, behavior: "smooth" });
 				}
-				document.dispatchEvent(new CustomEvent("nav:close"));
 			});
 		</script>
 	</body>
