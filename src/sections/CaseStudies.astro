@@ -1,85 +1,143 @@
 ---
-// Casos de estudio: declaración y tres columnas con foto y ficha técnica.
+// Casos de estudio: calco de "Serving all kinds of industries" de la referencia.
+// Label a la izquierda, declaración a la derecha y carrusel de tarjetas con flechas.
 import SectionLabel from "@/components/SectionLabel.astro";
 
 const casos = [
   {
-    nombre: "Sillas Plásticas",
-    activo: true,
     titulo: "Sillas Plásticas Inyectadas",
     resumen:
       "Recepción de matriz externa. Ajuste en planta, inyección de alto volumen y entrega de producto terminado listo para ensamble.",
     imagen: "/noticiasillas.webp",
-    especificaciones: [
-      { label: "Máquina", valor: "Inyectora 800 TN" },
-      { label: "Material", valor: "Polipropileno (PP)" },
-      { label: "Cavidades", valor: "1" },
-    ],
   },
   {
-    nombre: "Carcasas ABS",
-    activo: false,
     titulo: "Carcasas ABS",
     resumen:
       "Proyecto en desarrollo. Inyección de carcasas en ABS con materiales técnicos y control dimensional.",
     imagen: "/inyeccion.webp",
-    especificaciones: [
-      { label: "Máquina", valor: "Por definir" },
-      { label: "Material", valor: "ABS" },
-      { label: "Cavidades", valor: "Por definir" },
-    ],
   },
   {
-    nombre: "Engranajes Nylon",
-    activo: false,
     titulo: "Engranajes Nylon",
     resumen:
       "Proyecto en desarrollo. Engranajes técnicos en poliamida para aplicaciones de alta exigencia.",
     imagen: "/inyeccion.webp",
-    especificaciones: [
-      { label: "Máquina", valor: "Por definir" },
-      { label: "Material", valor: "Poliamida (PA)" },
-      { label: "Cavidades", valor: "Por definir" },
-    ],
   },
 ];
 ---
 
-<section id="casos" class="tone-dark relative overflow-hidden pb-24 pt-20 lg:pb-32 lg:pt-28" aria-label="Casos de estudio">
-  <!-- Líneas decorativas que bajan desde el borde superior, como los cables de la referencia -->
-  <div aria-hidden="true" class="pointer-events-none absolute inset-x-0 top-0 hidden h-56 lg:block">
-    <span class="absolute left-[67%] top-0 h-full w-px bg-matrifer-cyan/50"></span>
-    <span class="absolute left-[calc(67%+24px)] top-0 h-full w-px bg-white/20"></span>
-  </div>
+<section id="casos" class="tone-light overflow-clip pb-24 pt-16 lg:pb-28 lg:pt-24" aria-label="Casos de estudio">
+  <div class="shell">
+    <span class="rule" data-rule></span>
 
-  <div class="shell relative">
-    <SectionLabel label="Casos de estudio" />
-    <h2 class="t-statement mt-8 max-w-[34rem]">
-      Tres proyectos de inyección resueltos en planta, del molde a la pieza terminada.
-    </h2>
+    <!-- Encabezado: label a la izquierda, declaración grande a la derecha -->
+    <div class="mt-8 grid grid-cols-12 gap-x-5 gap-y-8">
+      <div class="col-span-12 lg:col-span-4">
+        <SectionLabel label="Casos de estudio" as="h2" />
+      </div>
+      <p class="t-sub1 reveal col-span-12 max-w-[48rem] lg:col-span-8 lg:col-start-5 lg:pl-10">
+        Tres proyectos de inyección resueltos en planta, del molde a la pieza terminada.
+      </p>
+    </div>
 
-    <ul class="mt-12 grid grid-cols-1 gap-x-5 gap-y-14 md:grid-cols-3 lg:mt-16">
-      {casos.map((caso, index) => (
-        <li class="reveal flex flex-col" style={`--d:${index}`}>
-          <img
-            src={caso.imagen}
-            alt={`Caso de estudio: ${caso.titulo}`}
-            class="aspect-[16/15] w-full object-cover"
-            loading="lazy"
-            decoding="async"
-          />
-          <h3 class="t-sub3 mt-5">{caso.titulo}</h3>
-          <p class="t-body mt-3 max-w-[26rem] text-tone-muted">{caso.resumen}</p>
-          <dl class="t-label-sm mt-6 border-t border-tone-line">
-            {caso.especificaciones.map((spec) => (
-              <div class="flex items-baseline justify-between gap-4 border-b border-tone-line py-2.5">
-                <dt class="text-tone-muted">{spec.label}</dt>
-                <dd class="text-right tabular-nums text-tone-fg">{spec.valor}</dd>
-              </div>
-            ))}
-          </dl>
-        </li>
-      ))}
-    </ul>
+    <!-- Carrusel horizontal: sangra hasta el borde derecho del viewport -->
+    <div
+      class="no-scrollbar -mr-5 mt-20 flex snap-x snap-mandatory gap-5 overflow-x-auto pr-5 lg:-mr-10 lg:mt-32 lg:pr-10"
+      data-cases-track
+      tabindex="0"
+      aria-label="Listado de casos de estudio"
+      role="region"
+    >
+      {
+        casos.map((caso, index) => (
+          <article
+            class="reveal w-[78vw] shrink-0 snap-start sm:w-[20.3125rem]"
+            style={`--d:${index}`}
+            data-cases-card
+          >
+            <img
+              src={caso.imagen}
+              alt={`Caso de estudio: ${caso.titulo}`}
+              class="aspect-square w-full object-cover"
+              loading="lazy"
+              decoding="async"
+            />
+            <h3 class="t-sub3 mt-6 text-tone-fg">{caso.titulo}</h3>
+            <p class="t-body mt-3 max-w-[18rem] text-tone-muted">{caso.resumen}</p>
+          </article>
+        ))
+      }
+    </div>
+
+    <!-- Controles del carrusel -->
+    <div class="mt-10 flex items-center gap-10">
+      <span class="rule flex-1" data-rule></span>
+      <div class="flex gap-2">
+        <button type="button" class="cases-btn" data-cases-prev aria-label="Caso anterior">
+          <i class="ph ph-arrow-left text-xl" aria-hidden="true"></i>
+        </button>
+        <button type="button" class="cases-btn" data-cases-next aria-label="Caso siguiente">
+          <i class="ph ph-arrow-right text-xl" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
   </div>
 </section>
+
+<style>
+  .cases-btn {
+    display: inline-flex;
+    height: 3.5rem;
+    width: 3.5rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-ref);
+    background-color: var(--soft);
+    color: var(--fg);
+    cursor: pointer;
+    transition:
+      background-color 0.25s ease,
+      opacity 0.25s ease;
+  }
+  .cases-btn:hover:not(:disabled) {
+    background-color: var(--line);
+  }
+  .cases-btn:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+</style>
+
+<script>
+  // Avanza o retrocede el carrusel de a una tarjeta y deshabilita los extremos.
+  const track = document.querySelector<HTMLElement>("[data-cases-track]");
+  const prev = document.querySelector<HTMLButtonElement>("[data-cases-prev]");
+  const next = document.querySelector<HTMLButtonElement>("[data-cases-next]");
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  if (track && prev && next) {
+    const paso = () => {
+      const card = track.querySelector<HTMLElement>("[data-cases-card]");
+      const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
+      return card ? card.offsetWidth + gap : track.clientWidth;
+    };
+
+    const actualizar = () => {
+      const max = track.scrollWidth - track.clientWidth;
+      prev.disabled = track.scrollLeft <= 1;
+      next.disabled = track.scrollLeft >= max - 1;
+    };
+
+    const mover = (direccion: number) => {
+      track.scrollBy({
+        left: direccion * paso(),
+        behavior: reduce.matches ? "auto" : "smooth",
+      });
+    };
+
+    prev.addEventListener("click", () => mover(-1));
+    next.addEventListener("click", () => mover(1));
+    track.addEventListener("scroll", actualizar, { passive: true });
+    window.addEventListener("resize", actualizar);
+    actualizar();
+  }
+</script>

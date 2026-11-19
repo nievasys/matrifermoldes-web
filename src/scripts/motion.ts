@@ -214,8 +214,8 @@ function initSmoothScroll() {
     lerp: 0.1,
     wheelMultiplier: 0.8,
     smoothWheel: true,
-    // Carrusel de noticias y menú: scroll nativo.
-    prevent: (node) => Boolean(node.closest("[data-news-track], #site-menu")),
+    // Carrusel de casos y menú: scroll nativo.
+    prevent: (node) => Boolean(node.closest("[data-cases-track], #site-menu")),
   });
   window.lenis = lenis;
   lenis.on("scroll", ScrollTrigger.update);
