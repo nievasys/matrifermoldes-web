@@ -3,11 +3,12 @@
 // Al hacer scroll los enlaces se pliegan en un botón de menú (como la referencia).
 // Escritorio: pasar el mouse (o el foco) por la caja vuelve a desplegar los enlaces.
 // Móvil: el botón abre un menú a pantalla completa con los enlaces grandes.
+const base = Astro.url.pathname === "/" ? "" : "/";
 const navItems = [
-  { label: "Nosotros", href: "#about" },
-  { label: "Servicios", href: "#servicios" },
-  { label: "Casos de estudio", href: "#casos" },
-  { label: "Ubicación", href: "#ubicacion" },
+  { label: "Nosotros", href: `${base}#about` },
+  { label: "Servicios", href: `${base}#servicios` },
+  { label: "Casos de estudio", href: `${base}#casos` },
+  { label: "Ubicación", href: `${base}#ubicacion` },
 ];
 ---
 
@@ -53,7 +54,7 @@ const navItems = [
           >
         </a>
 
-        <nav class="nav-links hidden overflow-hidden whitespace-nowrap lg:flex" aria-label="Navegación principal">
+        <nav id="nav-links" class="nav-links hidden overflow-hidden whitespace-nowrap lg:flex" aria-label="Navegación principal">
           {
             navItems.map((item) => (
               <a href={item.href} class="t-label p-3 text-white transition-opacity duration-200 hover:opacity-60">
@@ -75,7 +76,7 @@ const navItems = [
           <i class="menu-icon-close ph ph-x hidden" aria-hidden="true"></i>
         </button>
 
-        <a class="btn btn-primary hidden lg:inline-flex" href="#contacto">
+        <a class="btn btn-primary hidden lg:inline-flex" href={`${base}#contacto`}>
           Contactar <i class="ph ph-arrow-elbow-down-right" aria-hidden="true"></i>
         </a>
       </div>
@@ -84,7 +85,7 @@ const navItems = [
       <div id="site-menu" class="menu-panel fixed inset-0 -z-10 bg-black px-5 pb-10 pt-[8.5rem] lg:hidden">
         <nav class="flex flex-col items-start" aria-label="Menú">
           {
-            [...navItems, { label: "Contacto", href: "#contacto" }].map((item, index) => (
+            [...navItems, { label: "Contacto", href: `${base}#contacto` }].map((item, index) => (
               <a
                 href={item.href}
                 class="menu-link font-display text-[2.25rem] font-normal leading-[1.4] tracking-[-0.04em] text-white transition-opacity duration-200 hover:opacity-60"
@@ -120,13 +121,41 @@ const navItems = [
       else window.lenis?.start();
     };
 
-    const setOpen = (open: boolean) => {
+    // Con el menú móvil abierto el resto de la página queda inerte
+    const setInert = (inert: boolean) => {
+      document
+        .querySelectorAll<HTMLElement>("main, footer, .skip-link")
+        .forEach((el) => (el.inert = inert));
+    };
+
+    // Escritorio: el botón controla los enlaces; móvil: el panel a pantalla completa
+    const syncAria = () => {
+      if (desktop.matches) {
+        const visible =
+          header.dataset.collapsed !== "true" || root.matches(":hover, :focus-within");
+        toggle.setAttribute("aria-controls", "nav-links");
+        toggle.setAttribute("aria-expanded", String(visible));
+      } else {
+        toggle.setAttribute("aria-controls", "site-menu");
+        toggle.setAttribute("aria-expanded", String(isOpen()));
+      }
+    };
+
+    const setOpen = (open: boolean, returnFocus = false) => {
+      const wasOpen = isOpen();
       header.dataset.open = String(open);
       lockScroll(open);
-      toggle.setAttribute("aria-expanded", String(open));
+      const mobileOpen = open && !desktop.matches;
+      setInert(mobileOpen);
       toggle.setAttribute("aria-label", open ? "Cerrar menú" : "Abrir menú");
       iconOpen?.classList.toggle("hidden", open);
       iconClose?.classList.toggle("hidden", !open);
+      syncAria();
+      if (mobileOpen && !wasOpen) {
+        header.querySelector<HTMLElement>(".menu-link")?.focus();
+      } else if (!open && wasOpen && returnFocus) {
+        toggle.focus();
+      }
     };
     const isOpen = () => header.dataset.open === "true";
 
@@ -136,14 +165,17 @@ const navItems = [
         links?.querySelector<HTMLElement>("a")?.focus();
         return;
       }
-      setOpen(!isOpen());
+      setOpen(!isOpen(), true);
     });
+
+    ["mouseenter", "mouseleave", "focusin", "focusout"].forEach((type) =>
+      root.addEventListener(type, () => requestAnimationFrame(syncAria)),
+    );
 
     document.addEventListener("nav:close", () => setOpen(false));
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && isOpen()) {
-        setOpen(false);
-        toggle.focus();
+        setOpen(false, true);
       }
     });
     document.addEventListener("click", (event) => {
@@ -165,9 +197,11 @@ const navItems = [
         header.dataset.collapsed = String(collapsed);
         // En escritorio, al desplegarse los enlaces el menú ya no hace falta
         if (!collapsed && desktop.matches) setOpen(false);
+        syncAria();
       }).observe(sentinel);
     }
     desktop.addEventListener("change", () => setOpen(false));
+    syncAria();
 
     // Tono de la sección bajo la línea del header
     const sections = document.querySelectorAll<HTMLElement>(
@@ -200,6 +234,21 @@ const navItems = [
   }
   .site-header[data-tone="light"] .brand-word {
     color: var(--color-ink);
+  }
+
+  /* Foco dentro de la barra negra: anillo blanco que no se sale de la caja */
+  [data-nav-root] :global(:where(a, button):focus-visible) {
+    outline-color: #ffffff;
+    outline-offset: 1px;
+  }
+  .nav-links a:focus-visible {
+    outline-offset: -4px;
+  }
+  .brand:focus-visible {
+    outline-color: #ffffff;
+  }
+  .site-header[data-tone="light"] .brand:focus-visible {
+    outline-color: var(--color-ink);
   }
 
   /* El botón de menú solo existe con JS (los enlaces quedan accesibles en el footer) */
@@ -269,7 +318,8 @@ const navItems = [
         opacity 0.2s ease,
         visibility 0s linear 0.5s;
     }
-    :global(.js) .site-header[data-collapsed="true"]:not([data-open="true"]) [data-nav-root]:not(:hover, :focus-within) .menu-btn {
+    :global(.js) .site-header[data-collapsed="true"]:not([data-open="true"]) [data-nav-root]:not(:hover, :focus-within) .menu-btn,
+    :global(.js) .site-header[data-collapsed="true"]:not([data-open="true"]) .menu-btn:focus {
       max-width: 3rem;
       opacity: 1;
       visibility: visible;

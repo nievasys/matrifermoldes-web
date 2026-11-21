@@ -4,30 +4,45 @@ const servicios = [
   {
     title: "Inyección",
     image: "/inyeccion.webp",
+    alt: "Inyectora de plástico modelo BS800-III en la planta",
+    width: 1838,
+    height: 1870,
     description:
       "Nos dedicamos principalmente a la inyección de termoplásticos para terceros con máquinas inyectoras desde 50 TN hasta 800 TN.",
   },
   {
     title: "Matricería",
     image: "/matriceria.webp",
+    alt: "Molde de acero abierto con cuatro cavidades curvas para piezas de unión en cruz",
+    width: 1125,
+    height: 1749,
     description:
       "Realizamos trabajos de matricería para la creación de moldes desde el diseño hasta el producto final y asesoramiento personalizado de cavidades en los moldes para un mayor rendimiento en su producción. Los moldes son construidos en acero con el alojamiento para determinada cantidad de piezas de plástico inyectado.",
   },
   {
     title: "CNC",
     image: "/cnc.webp",
+    alt: "Fresa CNC mecanizando piezas sobre una placa de aluminio",
+    width: 2225,
+    height: 2092,
     description:
       "Maquinaria de control numérico para mecanizado de alta velocidad y precisión, garantizando la dimensionalidad exacta de cada componente.",
   },
   {
     title: "Diseño CAD/CAM",
     image: "/cad.webp",
+    alt: "Diseño CAD de una placa de molde con sus agujeros y guías",
+    width: 1041,
+    height: 637,
     description:
       "Contamos con un departamento de diseño y programación para un producto nuevo o el que necesita el cliente brindándole asesoramiento por la cantidad de cavidades para lograr la mayor eficiencia.",
   },
   {
     title: "Electroerosión",
     image: "/electroerosion.webp",
+    alt: "Electrodo de cobre trabajando por electroerosión sobre las cavidades de un molde",
+    width: 356,
+    height: 406,
     description:
       "Ofrecemos servicios de rectificado en máquina tangencial y electroerosión por penetración hasta 50 A.",
   },
@@ -37,10 +52,10 @@ const servicios = [
 <section
   id="servicios"
   class="tone-accent relative z-10 pb-16 pt-20 lg:pb-24 lg:pt-32"
-  aria-label="Servicios de Matrifer Moldes"
+  aria-labelledby="servicios-titulo"
 >
   <div class="shell">
-    <h2 class="t-display">Servicios y aplicaciones</h2>
+    <h2 id="servicios-titulo" class="t-display">Servicios y aplicaciones</h2>
     <p class="t-sub2 mt-6 max-w-[36rem] text-tone-fg lg:mt-8">
       Ofrecemos soluciones integrales donde la precisión está asegurada y el rendimiento,
       diseñado.
@@ -64,7 +79,9 @@ const servicios = [
               <div class="col-span-12 lg:col-span-3 lg:col-start-10 lg:flex lg:justify-end">
                 <img
                   src={servicio.image}
-                  alt={`Servicio de ${servicio.title}`}
+                  alt={servicio.alt}
+                  width={servicio.width}
+                  height={servicio.height}
                   class="aspect-[3/2] w-full object-cover lg:max-w-[360px]"
                   loading="lazy"
                   decoding="async"

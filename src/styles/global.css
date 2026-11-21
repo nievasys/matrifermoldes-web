@@ -271,9 +271,13 @@
   .link-arrow:hover > i {
     transform: translateX(3px);
   }
-  :where(a, button, input, textarea):focus-visible {
-    outline: 2px solid currentColor;
+  /* Anillo de foco: blanco en tonos oscuros, tinta en claros (sigue a --fg) */
+  :where(a, button, input, textarea, select, summary, [tabindex]):focus-visible {
+    outline: 2px solid var(--fg, currentColor);
     outline-offset: 3px;
+  }
+  :where(main, section)[tabindex="-1"]:focus {
+    outline: none;
   }
 
   /* Dibujos técnicos en línea */

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://matrifermoldes.com.ar/sitemap-index.xml

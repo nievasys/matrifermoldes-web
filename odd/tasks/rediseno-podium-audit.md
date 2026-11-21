@@ -1,0 +1,32 @@
+# ARIA + SEO fixes (T8)
+
+Source: read-only audit using `.agents/skills/ui-sdk/SKILL.md` (+ references/testing.md, patterns.md) as the ARIA checklist. @ui-sdk is NOT installed and must not be installed; apply its rules by hand: name every control, correct roles, keyboard and focus, dismissal and focus return, contrast 4.5:1 text and 3:1 control edges/focus rings, comments rare.
+
+Decisions from the user:
+- Site URL: `https://matrifermoldes.com.ar`.
+- Meta description: shorten to about 155 characters, voseo ("Contactanos"), keep "inyección de plásticos" + "Moreno" + "30 años", end with a period.
+- Phone links keep opening WhatsApp; give them an accessible name like "WhatsApp +54 9 11 5420-0297".
+- Contact field labels keep hiding while the field has text (explicit user request): do NOT float them.
+- Legal pages are being created by another writer at `/politica-de-privacidad`, `/terminos-y-condiciones`, `/politica-de-cookies` (the last one has an `#gestionar` section). Point the footer legal links there: Política de privacidad -> /politica-de-privacidad, Términos y condiciones -> /terminos-y-condiciones, Política de cookies -> /politica-de-cookies, Gestionar cookies -> /politica-de-cookies#gestionar. Keep labels verbatim.
+
+## Fixes to apply
+
+1. Focus ring visible everywhere: `.btn-primary`, `.btn-light`, `.btn-ink`, the menu button and links get a `:focus-visible` outline with at least 3:1 against the section background (white on dark tones, ink on light/paper/accent tones; never ink on dark). Add `select` to the global focus selector. Replace `outline-none` on contact fields with a visible `focus-visible` outline or a 2px underline plus outline.
+2. Mobile menu (`Header.astro`): on open move focus to the first `.menu-link`; set `inert` on `main` and `footer` (and the skip link) while open; on close remove `inert`; when closed with Escape or the button, focus returns to the button; when closed by a menu link, focus moves to the target section (see 6). Keep the existing scroll lock and animations.
+3. Desktop menu button: `aria-controls` must point to an element that exists and is relevant on desktop; give the `.nav-links` nav an id and switch `aria-controls`/`aria-expanded` by breakpoint (desktop: controls the links, expanded true when the links are visible because of hover/focus or not collapsed).
+4. Skip link "Saltar al contenido" as the first focusable element in `Layout.astro`, visually hidden until focused, pointing to `<main id="contenido" tabindex="-1">` (main lives in `src/pages/index.astro`; add the id there).
+5. Sections: replace `aria-label` with `aria-labelledby` pointing at the section's visible heading where one exists (add ids to headings; keep section ids/anchors unchanged). Hero keeps its h1 as the label.
+6. In-page anchor clicks (`Layout.astro` click handler): after scrolling, `history.pushState` the hash and move focus to the section with `focus({ preventScroll: true })` (give the target `tabindex="-1"` at runtime if it has none). Keep the existing Lenis/offset logic and the `nav:close` dispatch order.
+7. About video toggle: drop `aria-pressed`; keep the changing aria-label "Pausar video"/"Reproducir video".
+8. Contact form: wrap the `*` in `aria-hidden="true"`; add one small visible note above the submit, "Los campos con * son obligatorios."; inline errors in Spanish under each invalid required field linked with `aria-describedby` and `aria-invalid="true"` (messages: "Completá tu nombre.", "Ingresá un email válido.", "Completá tu teléfono.", "Escribí tu mensaje."), cleared as the user fixes the field; focus the first invalid field on submit; after a valid submit show a polite `role="status"` message "Se abrió tu cliente de correo para enviar la consulta." Keep field names, ids, order, autocomplete and the mailto body unchanged. Field underline on tone-dark: stronger (rgba(255,255,255,.45)) for form fields only.
+9. New-tab links (`target="_blank"`): add sr-only text " (se abre en una pestaña nueva)" inside the link. Add a `.sr-only` usage (Tailwind has `sr-only`).
+10. Footer: logo img `alt=""` (the wordmark text names it). Phone/WhatsApp links get accessible names as decided.
+11. Carousel (`CaseStudies.astro`): give the track an id and add `aria-controls` on prev/next; hide the controls without JS (only show when `html.js`); add an sr-only `aria-live="polite"` text "Caso N de 3" updated on scroll.
+12. Leaflet marker: pass `title: "Matrifer Moldes"` and `alt: "Matrifer Moldes, Colectora Sur Acceso Oeste 9924"` to `L.marker`; attribution text color solid #475569.
+13. Image alt text: look at each image file in `public/` (open them) and write a short, descriptive Spanish alt for what the photo actually shows (Servicios images, case study images, About still/poster, WhyUs plant photo). Decorative images keep `alt=""`. Add intrinsic `width`/`height` attributes from the real file dimensions to every `<img>`.
+14. Head (`Layout.astro`): `astro.config.mjs` gets `site: "https://matrifermoldes.com.ar"`; emit `<link rel="canonical">` and `og:url` from `new URL(Astro.url.pathname, Astro.site)`; absolute `og:image` and add `og:image:alt`, `og:site_name` ("Matrifer Moldes"), `twitter:title`, `twitter:description`, `twitter:image`; viewport `width=device-width, initial-scale=1`; `favicon.ico` with `sizes="any"` listed before the SVG icon. Layout must keep working for other pages that pass only `title` and `description` (the legal pages will).
+15. `public/robots.txt` allowing all with `Sitemap: https://matrifermoldes.com.ar/sitemap-index.xml`, and `@astrojs/sitemap` added through `npx astro add sitemap --yes` (or manual install + integration).
+16. JSON-LD in `index.astro` (enrich, do not remove anything): absolute `url` and `image` (use `/hero_image.webp` absolute), `logo` absolute (`/logo.svg`), `email: "matrifer@hotmail.com"`, `telephone: "+5491154200297"`, address with `streetAddress: "Colectora Sur Acceso Oeste 9924"`, `addressLocality: "La Reja"`, `addressRegion: "Buenos Aires"`, `addressCountry: "AR"` (no postal code: unknown), `geo` with latitude -34.6232171 and longitude -58.8263015, `sameAs` including the Facebook URL from the footer. No opening hours (unknown).
+17. Meta description per the decision above.
+
+Not applied on purpose: floating labels (user request), duplicated hero/servicios sentence and per-service anchors (copy/anchors are protected), font preload (low value), ui-sdk package and tests.

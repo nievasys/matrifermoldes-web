@@ -7,32 +7,43 @@ interface Props {
 }
 
 const { title, description } = Astro.props
+const site = Astro.site ?? new URL("https://matrifermoldes.com.ar");
+const canonical = new URL(Astro.url.pathname, site).href;
+const ogImage = new URL("/hero_image.webp", site).href;
 ---
 
 <!doctype html>
 <html lang="es-AR">
 	<head>
 		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="icon" href="/favicon.ico" sizes="any" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" type="image/png" href="/favicon-32x32.png" />
 		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-		<link rel="icon" href="/favicon.ico" />
+		<link rel="canonical" href={canonical} />
 		<meta name="generator" content={Astro.generator} />
 		<meta name="description" content={description} />
 		<meta name="theme-color" content="#020611" />
 		<meta property="og:type" content="website" />
 		<meta property="og:locale" content="es_AR" />
+		<meta property="og:site_name" content="Matrifer Moldes" />
+		<meta property="og:url" content={canonical} />
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
-		<meta property="og:image" content="/hero_image.webp" />
+		<meta property="og:image" content={ogImage} />
 		<meta property="og:image:width" content="1376" />
 		<meta property="og:image:height" content="768" />
+		<meta property="og:image:alt" content="Inyectora de plástico Borche en un estudio oscuro" />
 		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={ogImage} />
 		<title>{title}</title>
 		<script is:inline>document.documentElement.classList.add("js");</script>
 	</head>
 	<body class="tone-dark font-sans antialiased">
+		<a href="#contenido" class="skip-link btn btn-primary">Saltar al contenido</a>
 		<slot />
 		<script>
 			const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -58,33 +69,55 @@ const { title, description } = Astro.props
 			import "@/scripts/motion";
 		</script>
 		<script>
+			const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+			const scrollToSection = (section: HTMLElement, instant = false) => {
+				const offset = 96;
+				// Posición de layout, sin transforms: las secciones con escala o
+				// desplazamiento por scroll darían un destino corrido.
+				let layoutTop = 0;
+				for (let el: HTMLElement | null = section; el; el = el.offsetParent as HTMLElement | null) {
+					layoutTop += el.offsetTop;
+				}
+				const top = layoutTop - offset;
+				if (window.lenis) {
+					window.lenis.scrollTo(top, instant ? { immediate: true } : { duration: 1.4 });
+				} else if (instant || reduce.matches) {
+					window.scrollTo(0, top);
+				} else {
+					window.scrollTo({ top, behavior: "smooth" });
+				}
+			};
+			const focusSection = (section: HTMLElement) => {
+				if (!section.hasAttribute("tabindex")) section.setAttribute("tabindex", "-1");
+				section.focus({ preventScroll: true });
+			};
+
 			document.addEventListener("click", (event) => {
 				const target = event.target as Element | null;
 				const anchor = target?.closest?.('a[href^="#"]');
 				if (!anchor) return;
 				const selector = anchor.getAttribute("href");
 				if (!selector || selector === "#") return;
-				const section = document.querySelector(selector);
+				const section = document.querySelector<HTMLElement>(selector);
 				if (!section) return;
 				event.preventDefault();
 				// Primero se cierra el menú móvil, que bloquea el scroll mientras está abierto
 				document.dispatchEvent(new CustomEvent("nav:close"));
-				const offset = 96;
-				// Posición de layout, sin transforms: las secciones con escala o
-				// desplazamiento por scroll darían un destino corrido.
-				let layoutTop = 0;
-				for (let el = section as HTMLElement | null; el; el = el.offsetParent as HTMLElement | null) {
-					layoutTop += el.offsetTop;
-				}
-				const top = layoutTop - offset;
-				const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
-				if (window.lenis) {
-					window.lenis.scrollTo(top, { duration: 1.4 });
-				} else if (reduce.matches) {
-					window.scrollTo(0, top);
-				} else {
-					window.scrollTo({ top, behavior: "smooth" });
-				}
+				scrollToSection(section);
+				if (location.hash !== selector) history.pushState(null, "", selector);
+				focusSection(section);
+			});
+
+			// Llegada con hash desde otra página: los pines de ScrollTrigger cambian el alto
+			// después del salto nativo, así que se recalcula al terminar la carga.
+			window.addEventListener("load", () => {
+				const id = decodeURIComponent(location.hash.slice(1));
+				const section = id ? document.getElementById(id) : null;
+				if (!section) return;
+				requestAnimationFrame(() => {
+					scrollToSection(section, true);
+					focusSection(section);
+				});
 			});
 		</script>
 	</body>
@@ -98,5 +131,15 @@ const { title, description } = Astro.props
 	}
 	body {
 		overflow-x: clip;
+	}
+	.skip-link {
+		position: fixed;
+		left: 1rem;
+		top: 1rem;
+		z-index: 100;
+		transform: translateY(-200%);
+	}
+	.skip-link:focus {
+		transform: none;
 	}
 </style>

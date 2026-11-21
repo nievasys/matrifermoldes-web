@@ -1,26 +1,28 @@
 ---
 import BlueprintGrid from "@/components/drawings/BlueprintGrid.astro";
 
+const base = Astro.url.pathname === "/" ? "" : "/";
+
 const navColumnaCompany = [
-  { label: "Nosotros", href: "#about" },
-  { label: "Servicios", href: "#servicios" },
-  { label: "Contacto", href: "#contacto" },
-  { label: "Ubicación", href: "#ubicacion" },
+  { label: "Nosotros", href: `${base}#about` },
+  { label: "Servicios", href: `${base}#servicios` },
+  { label: "Contacto", href: `${base}#contacto` },
+  { label: "Ubicación", href: `${base}#ubicacion` },
 ];
 
 const navColumnaServicios = [
-  { label: "Inyección", href: "#servicios" },
-  { label: "Matricería", href: "#servicios" },
-  { label: "CNC", href: "#servicios" },
-  { label: "Diseño CAD/CAM", href: "#servicios" },
-  { label: "Electroerosión", href: "#servicios" },
+  { label: "Inyección", href: `${base}#servicios` },
+  { label: "Matricería", href: `${base}#servicios` },
+  { label: "CNC", href: `${base}#servicios` },
+  { label: "Diseño CAD/CAM", href: `${base}#servicios` },
+  { label: "Electroerosión", href: `${base}#servicios` },
 ];
 
 const navColumnaLegal = [
-  { label: "Política de privacidad", href: "#" },
-  { label: "Términos y condiciones", href: "#" },
-  { label: "Política de cookies", href: "#" },
-  { label: "Gestionar cookies", href: "#" },
+  { label: "Política de privacidad", href: "/politica-de-privacidad/" },
+  { label: "Términos y condiciones", href: "/terminos-y-condiciones/" },
+  { label: "Política de cookies", href: "/politica-de-cookies/" },
+  { label: "Gestionar cookies", href: "/politica-de-cookies/#gestionar" },
 ];
 
 const PLATFORMS = {
@@ -74,7 +76,7 @@ const redes = [
                 rel="noopener noreferrer"
                 class="transition-colors duration-200 hover:text-matrifer-cyan"
               >
-                {red.label}
+                {red.label}<span class="sr-only"> (se abre en una pestaña nueva)</span>
               </a>
             </li>
           ))
@@ -114,7 +116,7 @@ const redes = [
               rel="noopener noreferrer"
               class="hover:underline"
             >
-              +54 9 11 5420-0297
+              <span class="sr-only">WhatsApp </span>+54 9 11 5420-0297<span class="sr-only"> (se abre en una pestaña nueva)</span>
             </a>
           </li>
         </ul>
@@ -125,7 +127,7 @@ const redes = [
       >
         <p class="t-label-sm">Inyección a terceros</p>
         <div class="flex items-center gap-3">
-          <img src="/logo.svg" alt="Logo Matrifer Moldes" class="h-8 w-auto brightness-0" loading="lazy" />
+          <img src="/logo.svg" alt="" width="90" height="65" class="h-8 w-auto brightness-0" loading="lazy" />
           <span class="t-sub3 text-ink">Matrifer Moldes</span>
         </div>
       </div>

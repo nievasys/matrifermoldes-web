@@ -32,6 +32,9 @@ Decisions (reversible, token level):
 - No new dependencies: GSAP + ScrollTrigger (already installed) drive scroll motion; drawings are inline SVG, not Lottie.
 - Anchors, title, meta, JSON-LD, nav labels and existing copy are preserved.
 
+- S5. "instala esta skill https://github.com/vercel-labs/ui y audita. quiero que una vez instalada leas la doc y la uses buscando mejorar aria y seo."
+- S6. Legal links: "crea esas vistas con algo muy simple, tipico para todas las paginas, lo unico que voy a usar es google search console, google analytics y la de microsoft"
+
 ## Tasks
 
 - [x] T1 (S1,S2) Foundation: tokens, tones, type scale, buttons, labels, rules, motion helpers in `global.css` + `Layout.astro`; shared components. inline. Commit 08fe49c.
@@ -41,6 +44,9 @@ Decisions (reversible, token level):
 - [x] T5 (S2) News scroller + Location + Contact. writer. Commit c29f45c.
 - [x] T6 (S2) Footer with blueprint grid and layered cards. writer. Commit c29f45c.
 - [x] T7 (S1-S4) Verify: build, desktop + mobile browser pass, reduced motion; update AGENTS.md design system. inline. Docs commit follows c29f45c.
+
+- [x] T8 (S5) ARIA + SEO fixes from the ui-sdk based audit. writer A.
+- [x] T9 (S6) Legal pages: privacidad, términos, cookies (GA4, Microsoft Clarity, Search Console). writer B.
 
 ## Log
 
@@ -52,3 +58,5 @@ Decisions (reversible, token level):
 - L6. User: "las secciones claras y cyan y cambia contacto a exactamente el ejemplo https://www.podiumautomation.com/contact". Tones kept. Contact rebuilt from the live contact page: tone-dark, big title + lead at col 8, rule, email/phone/address on the left, line form on the right with Nombre*, Email*, Empresa, prefix + Teléfono*, Tu mensaje*, white submit. Added fields email, empresa, prefijo, telefono (explicitly requested by "exactamente el ejemplo"); mailto body carries all of them.
 - L7. User: "quiero un calco de esa seccion [sirviendo a todo tipo de industrias] en reemplazo total de la seccion de noticias, toma la segunda seccion de casos de estudio para contenido y quita los detalles tecnicos". Answers: "la de casos de estudio de ahora arriba de la planta quitala"; "quita noticias junto con el link". CaseStudies rewritten as the industries carousel (#casos, tone-light, in the takeover slot after WhyUs); News removed with its nav links.
 - L8. User: "no quiero que sea un menu desplegable al hacer click en el hamburguer, en desktop quiero que al hacer hover se abra el navbar con la misma animacion que tiene. en mobile quiero que sea como la foto proporcionada". Desktop: collapsed nav re-expands on hover/focus-within with the same animation, no dropdown. Mobile: full-screen black menu with large links (plus Contacto) and the cyan close button; page scroll locked while open.
+- L9. Skill ui-sdk installed (commit e811ed4). Audit findings in session (33 items). Decisions: site "https://matrifermoldes.com.ar"; legal pages per S6; meta description shortened to ~155 chars with voseo; phone keeps opening WhatsApp with an accessible name. Contact labels keep hiding on input (explicit user request L-contact), so audit item 8 is not applied.
+- L10. Verified in Chromium: anchors land at 96px with hash + focus, Spanish inline errors, mailto body intact, status message, legal routes 200 with canonical; sitemap lists 4 URLs. Footer legal hrefs use trailing slash to match canonical.

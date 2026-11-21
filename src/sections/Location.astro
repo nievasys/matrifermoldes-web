@@ -23,11 +23,11 @@ if (!cartoKey) {
 <section
   id="ubicacion"
   class="tone-light pb-28 pt-16"
-  aria-label="Ubicación de Matrifer Moldes"
+  aria-labelledby="ubicacion-titulo"
 >
   <div class="shell">
     <div class="grid grid-cols-12 gap-x-5 gap-y-8">
-      <h2 class="t-heading reveal col-span-12 lg:col-span-7">Dónde estamos</h2>
+      <h2 id="ubicacion-titulo" class="t-heading reveal col-span-12 lg:col-span-7">Dónde estamos</h2>
       <div class="reveal col-span-12 flex flex-col items-start gap-5 self-center lg:col-span-4 lg:col-start-9" style="--d:1">
         <p class="t-body text-tone-fg">
           Colectora Sur Acceso Oeste 9924.<br />La Reja, Moreno, Buenos Aires.
@@ -39,7 +39,7 @@ if (!cartoKey) {
           data-map-cta
           class="link-arrow"
         >
-          Cómo llegar
+          Cómo llegar<span class="sr-only"> (se abre en una pestaña nueva)</span>
           <i class="ph ph-arrow-up-right" aria-hidden="true"></i>
         </a>
       </div>
@@ -143,7 +143,7 @@ if (!cartoKey) {
 
   :global(.leaflet-control-attribution) {
     background: rgba(255, 255, 255, 0.85) !important;
-    color: rgba(71, 85, 105, 0.8) !important;
+    color: #475569 !important;
     font-size: 0.625rem !important;
   }
 
@@ -226,7 +226,11 @@ function destroyMap() {
         <span>La Reja, Moreno, Buenos Aires</span>
       `);
 
-      const marker = L.marker([lat, lng], { icon }).addTo(mapInstance);
+      const marker = L.marker([lat, lng], {
+        icon,
+        title: "Matrifer Moldes",
+        alt: "Matrifer Moldes, Colectora Sur Acceso Oeste 9924",
+      }).addTo(mapInstance);
       marker.bindPopup(popup).openPopup();
 
       const mapsLink = $('[data-map-cta]') as HTMLAnchorElement | null;

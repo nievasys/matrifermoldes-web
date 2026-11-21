@@ -24,16 +24,16 @@ const prefijos = [
 // Campo de línea: el texto del label queda dentro del campo, como un placeholder,
 // también con foco; se oculta recién cuando hay texto.
 const field =
-  "peer block w-full rounded-none border-0 border-b border-tone-line bg-transparent px-0 pb-2 pt-1 text-[1.125rem] leading-[1.4] text-tone-fg outline-none transition-colors duration-200 placeholder:text-transparent focus:border-tone-fg";
+  "peer block w-full rounded-none border-0 border-b border-white/45 bg-transparent px-0 pb-2 pt-1 text-[1.125rem] leading-[1.4] text-tone-fg transition-colors duration-200 placeholder:text-transparent focus:border-tone-fg";
 const floating =
   "pointer-events-none absolute left-0 top-1 text-[1.0625rem] font-normal leading-[1.5] text-tone-fg/85 peer-[:not(:placeholder-shown)]:opacity-0";
 ---
 
-<section id="contacto" class="tone-dark pb-24 pt-28 lg:pb-[9.5rem] lg:pt-[9rem]" aria-label="Contacto">
+<section id="contacto" class="tone-dark pb-24 pt-28 lg:pb-[9.5rem] lg:pt-[9rem]" aria-labelledby="contacto-titulo">
   <div class="shell">
     <!-- Encabezado: título a la izquierda, bajada a la derecha -->
     <div class="grid grid-cols-12 gap-x-5 gap-y-8">
-      <h2 class="t-display reveal col-span-12 lg:col-span-6">Contacto</h2>
+      <h2 id="contacto-titulo" class="t-display reveal col-span-12 lg:col-span-6">Contacto</h2>
       <p
         class="t-sub2 reveal col-span-12 max-w-[30rem] lg:col-span-5 lg:col-start-8 lg:mt-1"
         style="--d:1"
@@ -65,7 +65,7 @@ const floating =
               rel="noopener noreferrer"
               class="transition-opacity duration-200 hover:opacity-70"
             >
-              {telefono.label}
+              <span class="sr-only">WhatsApp </span>{telefono.label}<span class="sr-only"> (se abre en una pestaña nueva)</span>
             </a>
           </li>
           <li class="mt-[1.875rem]">
@@ -75,7 +75,7 @@ const floating =
               rel="noopener noreferrer"
               class="transition-opacity duration-200 hover:opacity-70"
             >
-              {direccion[0]}<br />{direccion[1]}
+              {direccion[0]}<br />{direccion[1]}<span class="sr-only"> (se abre en una pestaña nueva)</span>
             </a>
           </li>
         </ul>
@@ -88,33 +88,39 @@ const floating =
         style="--d:1"
         novalidate
       >
-        <label class="relative block">
-          <input
-            id="nombre"
-            name="nombre"
-            type="text"
-            required
-            maxlength="60"
-            autocomplete="name"
-            placeholder="Nombre"
-            class={field}
-          />
-          <span class={floating}>Nombre *</span>
-        </label>
+        <div>
+          <label class="relative block">
+            <input
+              id="nombre"
+              name="nombre"
+              type="text"
+              required
+              maxlength="60"
+              autocomplete="name"
+              placeholder="Nombre"
+              class={field}
+            />
+            <span class={floating}>Nombre <span aria-hidden="true">*</span></span>
+          </label>
+          <p id="nombre-error" class="t-label-sm mt-2 text-matrifer-cyan" hidden></p>
+        </div>
 
-        <label class="relative block">
-          <input
-            id="email"
-            name="email"
-            type="email"
-            required
-            maxlength="120"
-            autocomplete="email"
-            placeholder="Email"
-            class={field}
-          />
-          <span class={floating}>Email *</span>
-        </label>
+        <div>
+          <label class="relative block">
+            <input
+              id="email"
+              name="email"
+              type="email"
+              required
+              maxlength="120"
+              autocomplete="email"
+              placeholder="Email"
+              class={field}
+            />
+            <span class={floating}>Email <span aria-hidden="true">*</span></span>
+          </label>
+          <p id="email-error" class="t-label-sm mt-2 text-matrifer-cyan" hidden></p>
+        </div>
 
         <label class="relative block">
           <input
@@ -129,55 +135,63 @@ const floating =
           <span class={floating}>Empresa</span>
         </label>
 
-        <div class="flex items-end gap-4">
-          <label class="relative block w-[4.5rem] shrink-0">
-            <span class="sr-only">Prefijo telefónico</span>
-            <select
-              id="prefijo"
-              name="prefijo"
-              autocomplete="tel-country-code"
-              class="block w-full cursor-pointer appearance-none rounded-none border-0 border-b border-tone-line bg-transparent py-2 pr-5 text-[0.875rem] text-tone-fg outline-none transition-colors duration-200 focus:border-tone-fg"
-            >
-              {prefijos.map((p) => <option value={p.code} class="bg-ink text-white">{p.label}</option>)}
-            </select>
-            <i
-              class="ph ph-caret-down pointer-events-none absolute bottom-2.5 right-0 text-[0.875rem]"
-              aria-hidden="true"
-            ></i>
-          </label>
-          <label class="relative block grow lg:mr-[1.375rem]">
-            <input
-              id="telefono"
-              name="telefono"
-              type="tel"
-              required
-              maxlength="30"
-              autocomplete="tel-national"
-              placeholder="Teléfono"
-              class={field}
-            />
-            <span class={floating}>Teléfono *</span>
-          </label>
+        <div>
+          <div class="flex items-end gap-4">
+            <label class="relative block w-[4.5rem] shrink-0">
+              <span class="sr-only">Prefijo telefónico</span>
+              <select
+                id="prefijo"
+                name="prefijo"
+                autocomplete="tel-country-code"
+                class="block w-full cursor-pointer appearance-none rounded-none border-0 border-b border-white/45 bg-transparent py-2 pr-5 text-[0.875rem] text-tone-fg transition-colors duration-200 focus:border-tone-fg"
+              >
+                {prefijos.map((p) => <option value={p.code} class="bg-ink text-white">{p.label}</option>)}
+              </select>
+              <i
+                class="ph ph-caret-down pointer-events-none absolute bottom-2.5 right-0 text-[0.875rem]"
+                aria-hidden="true"
+              ></i>
+            </label>
+            <label class="relative block grow lg:mr-[1.375rem]">
+              <input
+                id="telefono"
+                name="telefono"
+                type="tel"
+                required
+                maxlength="30"
+                autocomplete="tel-national"
+                placeholder="Teléfono"
+                class={field}
+              />
+              <span class={floating}>Teléfono <span aria-hidden="true">*</span></span>
+            </label>
+          </div>
+          <p id="telefono-error" class="t-label-sm mt-2 text-matrifer-cyan" hidden></p>
         </div>
 
-        <label class="relative block">
-          <textarea
-            id="mensaje"
-            name="mensaje"
-            required
-            rows="5"
-            maxlength="2000"
-            placeholder="Tu mensaje"
-            class={`${field} h-[8.75rem] resize-none`}
-          ></textarea>
-          <span class={floating}>Tu mensaje *</span>
-        </label>
+        <div>
+          <label class="relative block">
+            <textarea
+              id="mensaje"
+              name="mensaje"
+              required
+              rows="5"
+              maxlength="2000"
+              placeholder="Tu mensaje"
+              class={`${field} h-[8.75rem] resize-none`}
+            ></textarea>
+            <span class={floating}>Tu mensaje <span aria-hidden="true">*</span></span>
+          </label>
+          <p id="mensaje-error" class="t-label-sm mt-2 text-matrifer-cyan" hidden></p>
+        </div>
 
         <div class="mt-6">
+          <p class="t-label-sm mb-6 text-tone-muted">Los campos con * son obligatorios.</p>
           <button type="submit" class="btn btn-light">
             Enviar consulta
             <i class="ph ph-arrow-elbow-down-right" aria-hidden="true"></i>
           </button>
+          <p id="contact-status" class="t-label-sm mt-4 text-tone-fg" role="status"></p>
         </div>
       </form>
     </div>
@@ -186,9 +200,45 @@ const floating =
 
 <script define:vars={{ destinatario }}>
   const form = document.querySelector("#contact-form");
+  const mensajes = {
+    nombre: "Completá tu nombre.",
+    email: "Ingresá un email válido.",
+    telefono: "Completá tu teléfono.",
+    mensaje: "Escribí tu mensaje.",
+  };
+  const valido = (campo) => campo.value.trim() !== "" && campo.checkValidity();
+  const marcar = (campo, invalido) => {
+    const error = document.querySelector(`#${campo.id}-error`);
+    if (invalido) {
+      campo.setAttribute("aria-invalid", "true");
+      campo.setAttribute("aria-describedby", `${campo.id}-error`);
+    } else {
+      campo.removeAttribute("aria-invalid");
+      campo.removeAttribute("aria-describedby");
+    }
+    if (error) {
+      error.textContent = invalido ? mensajes[campo.id] : "";
+      error.hidden = !invalido;
+    }
+  };
+  const campos = Object.keys(mensajes)
+    .map((id) => document.querySelector(`#${id}`))
+    .filter(Boolean);
+  campos.forEach((campo) =>
+    campo.addEventListener("input", () => {
+      if (campo.getAttribute("aria-invalid") === "true" && valido(campo)) marcar(campo, false);
+    }),
+  );
   form?.addEventListener("submit", (e) => {
     e.preventDefault();
-    if (!form.reportValidity()) return;
+    const invalidos = campos.filter((campo) => !valido(campo));
+    campos.forEach((campo) => marcar(campo, invalidos.includes(campo)));
+    const estado = document.querySelector("#contact-status");
+    if (invalidos.length) {
+      if (estado) estado.textContent = "";
+      invalidos[0].focus();
+      return;
+    }
     const value = (id) => document.querySelector(`#${id}`)?.value.trim() ?? "";
     const nombre = value("nombre");
     const email = value("email");
@@ -205,6 +255,7 @@ const floating =
       `Email: ${email}`,
       `Teléfono: ${telefono}`,
     ].join("\n");
+    if (estado) estado.textContent = "Se abrió tu cliente de correo para enviar la consulta.";
     window.location.href = `mailto:${destinatario}?subject=${encodeURIComponent("Consulta web - Matrifer Moldes")}&body=${encodeURIComponent(body)}`;
   });
 </script>

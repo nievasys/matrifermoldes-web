@@ -1,6 +1,6 @@
 ---
 const title = "Servicio de Inyección de Plásticos en Moreno - Matrifer Moldes";
-const description = "Somos una empresa con 30 años de experiencia especializada en la inyección de plásticos en Moreno, ofreciendo soluciones de alta calidad para tus necesidades de fabricación. Contáctanos para obtener más información sobre nuestros servicios";
+const description = "Inyección de plásticos en Moreno con 30 años de experiencia. Matricería, moldes y piezas de alta calidad para tu producción. Contactanos y pedí presupuesto.";
 import Header from '@/sections/Header.astro';
 import Layout from '@/layouts/Layout.astro';
 import Hero from '@/sections/Hero.astro';
@@ -11,6 +11,9 @@ import WhyUs from '@/sections/WhyUs.astro';
 import Contact from '@/sections/Contact.astro';
 import Location from '@/sections/Location.astro';
 import Footer from '@/sections/Footer.astro';
+
+const site = Astro.site ?? new URL("https://matrifermoldes.com.ar");
+const absolute = (path: string) => new URL(path, site).href;
 ---
 
 <Layout title={title} description={description}>
@@ -21,14 +24,22 @@ import Footer from '@/sections/Footer.astro';
 			"@type": "LocalBusiness",
 			name: "Matrifer Moldes",
 			description,
-			url: "/",
-			image: "/logo.svg",
-			telephone: "+54 9 11 5420-0297",
+			url: absolute("/"),
+			image: absolute("/hero_image.webp"),
+			logo: absolute("/logo.svg"),
+			email: "matrifer@hotmail.com",
+			telephone: "+5491154200297",
 			address: {
 				"@type": "PostalAddress",
-				addressLocality: "Moreno",
+				streetAddress: "Colectora Sur Acceso Oeste 9924",
+				addressLocality: "La Reja",
 				addressRegion: "Buenos Aires",
 				addressCountry: "AR"
+			},
+			geo: {
+				"@type": "GeoCoordinates",
+				latitude: -34.6232171,
+				longitude: -58.8263015
 			},
 			serviceType: [
 				"Inyección de termoplásticos",
@@ -39,12 +50,13 @@ import Footer from '@/sections/Footer.astro';
 			],
 			sameAs: [
 				"https://www.tiktok.com/@matrifermoldes",
-				"https://www.instagram.com/matrifermoldes"
+				"https://www.instagram.com/matrifermoldes",
+				"https://www.facebook.com/people/Matrifer-Moldes/pfbid022aodJ7Si9uXxu3qjeDxzKv8QLQ8K8MJDT2aPuTVPjz9hQ4TuB4Ms49AJ7rDVuchxl/"
 			]
 		})}
 	/>
 	<Header />
-	<main>
+	<main id="contenido" tabindex="-1">
 		<Hero />
 		<div data-under class="overflow-clip">
 			<About />

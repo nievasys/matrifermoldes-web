@@ -9,29 +9,38 @@ const casos = [
     resumen:
       "Recepción de matriz externa. Ajuste en planta, inyección de alto volumen y entrega de producto terminado listo para ensamble.",
     imagen: "/noticiasillas.webp",
+    alt: "Sillas plásticas blancas apiladas en el depósito, listas para entregar",
+    ancho: 2250,
+    alto: 4000,
   },
   {
     titulo: "Carcasas ABS",
     resumen:
       "Proyecto en desarrollo. Inyección de carcasas en ABS con materiales técnicos y control dimensional.",
     imagen: "/inyeccion.webp",
+    alt: "Inyectora de plástico modelo BS800-III en la planta",
+    ancho: 1838,
+    alto: 1870,
   },
   {
     titulo: "Engranajes Nylon",
     resumen:
       "Proyecto en desarrollo. Engranajes técnicos en poliamida para aplicaciones de alta exigencia.",
     imagen: "/inyeccion.webp",
+    alt: "Inyectora de plástico modelo BS800-III en la planta",
+    ancho: 1838,
+    alto: 1870,
   },
 ];
 ---
 
-<section id="casos" class="tone-light overflow-clip pb-24 pt-16 lg:pb-28 lg:pt-24" aria-label="Casos de estudio">
+<section id="casos" class="tone-light overflow-clip pb-24 pt-16 lg:pb-28 lg:pt-24" aria-labelledby="casos-titulo">
   <div class="shell">
     <span class="rule" data-rule></span>
 
     <!-- Encabezado: label a la izquierda, declaración grande a la derecha -->
     <div class="mt-8 grid grid-cols-12 gap-x-5 gap-y-8">
-      <div class="col-span-12 lg:col-span-4">
+      <div id="casos-titulo" class="col-span-12 lg:col-span-4">
         <SectionLabel label="Casos de estudio" as="h2" />
       </div>
       <p class="t-sub1 reveal col-span-12 max-w-[48rem] lg:col-span-8 lg:col-start-5 lg:pl-10">
@@ -42,6 +51,7 @@ const casos = [
     <!-- Carrusel horizontal: sangra hasta el borde derecho del viewport -->
     <div
       class="no-scrollbar -mr-5 mt-20 flex snap-x snap-mandatory gap-5 overflow-x-auto pr-5 lg:-mr-10 lg:mt-32 lg:pr-10"
+      id="casos-track"
       data-cases-track
       tabindex="0"
       aria-label="Listado de casos de estudio"
@@ -56,7 +66,9 @@ const casos = [
           >
             <img
               src={caso.imagen}
-              alt={`Caso de estudio: ${caso.titulo}`}
+              alt={caso.alt}
+              width={caso.ancho}
+              height={caso.alto}
               class="aspect-square w-full object-cover"
               loading="lazy"
               decoding="async"
@@ -71,19 +83,26 @@ const casos = [
     <!-- Controles del carrusel -->
     <div class="mt-10 flex items-center gap-10">
       <span class="rule flex-1" data-rule></span>
-      <div class="flex gap-2">
-        <button type="button" class="cases-btn" data-cases-prev aria-label="Caso anterior">
+      <div class="cases-controls gap-2">
+        <button type="button" class="cases-btn" data-cases-prev aria-label="Caso anterior" aria-controls="casos-track">
           <i class="ph ph-arrow-left text-xl" aria-hidden="true"></i>
         </button>
-        <button type="button" class="cases-btn" data-cases-next aria-label="Caso siguiente">
+        <button type="button" class="cases-btn" data-cases-next aria-label="Caso siguiente" aria-controls="casos-track">
           <i class="ph ph-arrow-right text-xl" aria-hidden="true"></i>
         </button>
       </div>
     </div>
+    <p class="sr-only" aria-live="polite" data-cases-status></p>
   </div>
 </section>
 
 <style>
+  .cases-controls {
+    display: none;
+  }
+  :global(.js) .cases-controls {
+    display: flex;
+  }
   .cases-btn {
     display: inline-flex;
     height: 3.5rem;
@@ -112,9 +131,12 @@ const casos = [
   const track = document.querySelector<HTMLElement>("[data-cases-track]");
   const prev = document.querySelector<HTMLButtonElement>("[data-cases-prev]");
   const next = document.querySelector<HTMLButtonElement>("[data-cases-next]");
+  const status = document.querySelector<HTMLElement>("[data-cases-status]");
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
 
   if (track && prev && next) {
+    const total = track.querySelectorAll("[data-cases-card]").length;
+    let actual = 1;
     const paso = () => {
       const card = track.querySelector<HTMLElement>("[data-cases-card]");
       const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
@@ -125,6 +147,13 @@ const casos = [
       const max = track.scrollWidth - track.clientWidth;
       prev.disabled = track.scrollLeft <= 1;
       next.disabled = track.scrollLeft >= max - 1;
+      const caso = next.disabled
+        ? total
+        : Math.min(total, Math.round(track.scrollLeft / paso()) + 1);
+      if (status && caso !== actual) {
+        actual = caso;
+        status.textContent = `Caso ${caso} de ${total}`;
+      }
     };
 
     const mover = (direccion: number) => {

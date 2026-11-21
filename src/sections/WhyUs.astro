@@ -24,12 +24,14 @@ const pilares = [
 ];
 ---
 
-<section class="tone-dark overflow-clip" aria-label="Por qué trabajar con nosotros">
+<section class="tone-dark overflow-clip" aria-labelledby="whyus-titulo">
   <!-- Imagen a sangre que se abre desde un marco al hacer scroll -->
   <div data-cover class="relative h-[70dvh] overflow-hidden lg:h-[100dvh]">
     <img
       src="/whyus_image.webp"
-      alt="Planta industrial de Matrifer Moldes"
+      alt="Vista desde arriba de la planta de Matrifer Moldes con inyectoras y pallets de material"
+      width="1280"
+      height="1600"
       class="absolute inset-0 h-full w-full object-cover"
       loading="lazy"
       decoding="async"
@@ -37,7 +39,7 @@ const pilares = [
   </div>
 
   <div class="shell pb-24 pt-20 lg:pb-40 lg:pt-32">
-    <h2 class="t-statement max-w-[52rem]">
+    <h2 id="whyus-titulo" class="t-statement max-w-[52rem]">
       Cada pieza es el resultado de precisión, pasión y décadas de ingeniería dedicada a
       perfeccionar cada ciclo productivo.
     </h2>
@@ -64,7 +66,7 @@ const pilares = [
           rel="noopener noreferrer"
           class="btn btn-light mt-12"
         >
-          Solicitar presupuesto
+          Solicitar presupuesto<span class="sr-only"> (se abre en una pestaña nueva)</span>
           <i class="ph ph-arrow-elbow-down-right" aria-hidden="true"></i>
         </a>
       </div>
