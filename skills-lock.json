@@ -1,11 +1,19 @@
 {
-  "version": 1,
+  "version": 2,
   "skills": {
     "design-taste-frontend": {
       "source": "Leonxlnx/taste-skill",
       "sourceType": "github",
       "skillPath": "skills/taste-skill/SKILL.md",
-      "computedHash": "6d838b246d0e35d0b53f4f23f98ba7a1dd561937e64f7d0c7553b0928e376c3e"
+      "computedHash": "44f5bbbf437a1d5d08f2540a3db55c2e930395cbdc029276819e942dc158217b"
+    },
+    "ui-sdk": {
+      "source": "vercel-labs/ui",
+      "commit": "06a7633f9543125163574d508a0bbdc3a173042d",
+      "sourceType": "github",
+      "skillPath": "packages/core/skills/ui-sdk/SKILL.md",
+      "computedHash": "cabe635c8f279e77b50a265c499ea2e8ebd471574b96acfc61a11a147d553e6d",
+      "installMode": "copy"
     }
   }
 }
