@@ -1,0 +1,118 @@
+---
+import LegalLayout from "@/layouts/LegalLayout.astro";
+
+const cookies = [
+  {
+    name: "_ga",
+    provider: "Google Analytics",
+    purpose: "Distingue visitantes para medir el uso del sitio.",
+    duration: "2 años",
+  },
+  {
+    name: "_ga_<ID>",
+    provider: "Google Analytics",
+    purpose: "Guarda el estado de la sesión de medición.",
+    duration: "2 años",
+  },
+  {
+    name: "_clck",
+    provider: "Microsoft Clarity",
+    purpose: "Identifica al visitante entre visitas para grabaciones de sesión y mapas de calor.",
+    duration: "1 año",
+  },
+  {
+    name: "_clsk",
+    provider: "Microsoft Clarity",
+    purpose: "Une las páginas vistas de una misma sesión.",
+    duration: "1 día",
+  },
+  {
+    name: "CLID",
+    provider: "Microsoft Clarity (tercero)",
+    purpose: "Identifica la primera vez que Clarity ve a este usuario.",
+    duration: "1 año",
+  },
+  {
+    name: "MUID",
+    provider: "Microsoft (tercero)",
+    purpose: "Identifica navegadores únicos en los servicios de Microsoft.",
+    duration: "1 año",
+  },
+];
+---
+
+<LegalLayout
+  title="Política de cookies | Matrifer Moldes"
+  description="Qué cookies usa el sitio de Matrifer Moldes (Google Analytics y Microsoft Clarity), para qué sirven y cómo podés gestionarlas."
+  heading="Política de cookies"
+  updated="Noviembre de 2026"
+>
+  <h2>Qué son las cookies</h2>
+  <p>
+    Las cookies son pequeños archivos que un sitio guarda en tu navegador para recordar información
+    sobre tu visita. Usamos cookies solo para entender cómo se usa el sitio y mejorarlo.
+  </p>
+
+  <h2>Qué cookies usamos</h2>
+  <p>
+    Usamos Google Analytics 4 para medir visitas y Microsoft Clarity para ver grabaciones de sesión
+    y mapas de calor. Google Search Console no instala cookies en el sitio: solo nos muestra datos
+    de cómo aparece el sitio en las búsquedas de Google.
+  </p>
+  <div class="table-wrap">
+    <table>
+      <caption class="sr-only">Cookies del sitio, proveedor, finalidad y duración aproximada</caption>
+      <thead>
+        <tr>
+          <th scope="col">Cookie</th>
+          <th scope="col">Proveedor</th>
+          <th scope="col">Finalidad</th>
+          <th scope="col">Duración aproximada</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          cookies.map((cookie) => (
+            <tr>
+              <td>
+                <code>{cookie.name}</code>
+              </td>
+              <td>{cookie.provider}</td>
+              <td>{cookie.purpose}</td>
+              <td>{cookie.duration}</td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+  <p>
+    El mapa de ubicación carga imágenes de CARTO y OpenStreetMap. Esos servidores reciben datos
+    técnicos de la conexión, como tu dirección IP, para poder mostrar el mapa.
+  </p>
+
+  <h2 id="gestionar">Gestionar cookies</h2>
+  <p>
+    Podés bloquear o borrar las cookies desde la configuración de tu navegador, en el apartado de
+    privacidad o de datos de sitios. Si las bloqueás, el sitio sigue funcionando igual.
+  </p>
+  <p>También podés usar las herramientas oficiales de cada proveedor:</p>
+  <ul>
+    <li>
+      <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer"
+        >Complemento de inhabilitación de Google Analytics</a
+      >
+    </li>
+    <li>
+      <a
+        href="https://privacy.microsoft.com/es-es/privacystatement"
+        target="_blank"
+        rel="noopener noreferrer">Declaración de privacidad de Microsoft</a
+      >
+    </li>
+  </ul>
+  <p>
+    Para saber cómo tratamos tus datos, leé la
+    <a href="/politica-de-privacidad">Política de privacidad</a>.
+  </p>
+</LegalLayout>
