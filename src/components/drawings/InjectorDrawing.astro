@@ -22,14 +22,6 @@ const bolt = (cx: number, cy: number, r = 4) => ({ cx, cy, r, d: r * 0.62 });
 const guardMullions = [168, 210];
 const guardPanes = [410, 470, 547];
 
-// Puerta corrediza: abierta sobre el protector, cerrada tapa el molde
-// hasta la platina fija (recorrido de 170 en x, ver el ciclo).
-const DOOR = { x: 412, y: 127, w: 174, h: 162 };
-const doorPanes = [470, 511];
-
-// Pieza inyectada: asiento de silla de perfil, entre las mitades del molde
-const SEAT = { x: 670, y: 158 };
-
 // Columnas guía (tie bars): dos arriba y dos abajo, en líneas dobles
 const tieBars = [140, 161, 252, 270];
 const TIE_FROM = 586;
@@ -259,7 +251,7 @@ const panelButtons = [795, 805.5, 816.5];
         <rect x="268" y="257" width="76" height="17" />
         {[150, 230].map((y) => <rect x="258" y={y} width="3" height="10" />)}
 
-        <!-- Protector fijo con ventanas (la puerta corre por delante) -->
+        <!-- Protector con puerta, ventanas y manija -->
         <rect class="is-solid" x="348" y="102" width="238" height="187" />
         <line x1="348" y1="127" x2="586" y2="127" />
         <rect x="536" y="108" width="20" height="16" />
@@ -269,8 +261,9 @@ const panelButtons = [795, 805.5, 816.5];
         {guardMullions.map((y) => <line class="is-faint" x1="352" y1={y} x2="582" y2={y} />)}
         <line x1="348" y1="258" x2="586" y2="258" />
         <rect x="356" y="262" width="190" height="22" />
-        <!-- Guía superior de la puerta, hasta la platina fija -->
-        <line x1="586" y1="124" x2="756" y2="124" />
+        <rect class="is-solid" x="559" y="124" width="7" height="148" rx="3.5" />
+        <line x1="566" y1="134" x2="572" y2="134" />
+        <line x1="566" y1="262" x2="572" y2="262" />
 
         <!-- Baliza sobre poste -->
         <rect class="is-solid" x="308" y="58" width="4" height="50" />
@@ -287,40 +280,6 @@ const panelButtons = [795, 805.5, 816.5];
         <circle cx="735" cy="212" r="3.5" />
         <rect class="is-solid" x="756" y="120" width="12" height="172" />
         {tieBars.map((y) => <rect class="is-solid" x="754" y={y - 5} width="12" height="10" />)}
-
-        <!-- Asiento inyectado: aparece con el molde abierto y se expulsa -->
-        <g data-draw-skip>
-          <g data-injector-seat opacity="0">
-            <g transform={`translate(${SEAT.x} ${SEAT.y})`}>
-              <path
-                style="stroke: var(--color-matrifer-cyan); fill: color-mix(in srgb, var(--color-matrifer-cyan) 12%, transparent);"
-                d="M2 15 C3 6 10 2 20 1 C27 0 31 4 31 11 L30 82 L30 93 C30 97 26 98 24 95 L22 87 L5 87 C2 87 1 84 1 80 C0 59 0 36 2 15 Z"
-              />
-              <path
-                style="stroke: var(--color-matrifer-cyan); opacity: 0.6;"
-                d="M23 4 C27 7 27 13 26 22 L25 86"
-              />
-            </g>
-          </g>
-        </g>
-
-        <!-- Puerta corrediza con ventanas y manija (cierra para inyectar) -->
-        <g data-injector-door>
-          <rect class="is-solid" x={DOOR.x} y={DOOR.y} width={DOOR.w} height={DOOR.h} />
-          <rect x={DOOR.x + 4} y="131" width="140" height="123" />
-          {doorPanes.map((x) => <line x1={x} y1="131" x2={x} y2="254" />)}
-          {
-            guardMullions.map((y) => (
-              <line class="is-faint" x1={DOOR.x + 4} y1={y} x2={DOOR.x + 144} y2={y} />
-            ))
-          }
-          <line x1={DOOR.x} y1="258" x2={DOOR.x + DOOR.w} y2="258" />
-          <rect x={DOOR.x + 8} y="262" width="134" height="22" />
-          <line x1={DOOR.x + 148} y1="131" x2={DOOR.x + 148} y2="254" />
-          <rect class="is-solid" x="568" y="134" width="7" height="138" rx="3.5" />
-          <line x1={DOOR.x + 150} y1="144" x2="568" y2="144" />
-          <line x1={DOOR.x + 150} y1="262" x2="568" y2="262" />
-        </g>
 
         <!-- Columna de mando (platina fija carenada) -->
         <rect class="is-solid" x="765" y="114" width="45" height="180" />
@@ -343,11 +302,8 @@ const panelButtons = [795, 805.5, 816.5];
         <circle cx="839" cy="225" r="6" />
         <line x1="839" y1="231" x2="839" y2="238" />
 
-        <!-- Riel del carro de inyección -->
+        <!-- Unidad de inyección: carro, boquilla y cañón -->
         <rect class="is-solid" x="878" y="272" width="222" height="8" />
-
-        <!-- Unidad de inyección: carro, boquilla y cañón (avanza al inyectar) -->
-        <g data-injector-carriage>
         <rect class="is-solid" x="844" y="200" width="6" height="58" />
         <rect class="is-solid" x="868" y="234" width="26" height="38" />
         <circle cx="875" cy="248" r="4" />
@@ -390,7 +346,6 @@ const panelButtons = [795, 805.5, 816.5];
         <rect class="is-solid" x="882" y="104" width="88" height="22" />
         <line x1="882" y1="114" x2="970" y2="114" />
         <rect class="is-solid" x="879" y="96" width="94" height="8" />
-        </g>
       </g>
 
       <!-- Piezas animadas por opacidad: fuera del fundido general -->
@@ -414,32 +369,15 @@ const panelButtons = [795, 805.5, 816.5];
     if (reduce) return;
     const moving = svg.querySelector("[data-injector-moving]");
     const lamp = svg.querySelector("[data-injector-lamp]");
-    const door = svg.querySelector("[data-injector-door]");
-    const carriage = svg.querySelector("[data-injector-carriage]");
-    const seat = svg.querySelector("[data-injector-seat]");
-    if (!moving || !lamp || !door || !carriage || !seat) return;
+    if (!moving || !lamp) return;
 
-    // Ciclo de moldeo (7.6 s): cierra la puerta, cierra el molde, inyecta
-    // (avanza el carro y se enciende la baliza), abre el molde, abre la
-    // puerta y el asiento queda a la vista y se expulsa hacia abajo.
-    // El asiento solo se hace visible detrás de la puerta cerrada y con el
-    // molde ya abierto; la puerta lo descubre al correrse.
-    gsap.set(lamp, { opacity: 0.25 });
+    // Ciclo de moldeo: cierre del molde, baliza titila durante la inyección, apertura
     const cycle = gsap.timeline({ paused: true, repeat: -1, defaults: { ease: "power2.inOut" } });
     cycle
-      .set(seat, { opacity: 0, y: 0 }, 0)
-      .to(door, { x: 170, duration: 1 }, 0)
-      .to(moving, { x: 104, duration: 1.2 }, 1)
-      .to(carriage, { x: -5, duration: 0.5 }, 2.2)
-      .to(lamp, { opacity: 1, duration: 0.3, ease: "sine.inOut" }, 2.2)
-      .to(carriage, { x: 0, duration: 0.5 }, 3.2)
-      .to(lamp, { opacity: 0.25, duration: 0.4, ease: "sine.inOut" }, 3.4)
-      .to(moving, { x: 0, duration: 1.2 }, 3.7)
-      .set(seat, { opacity: 1 }, 4.9)
-      .to(door, { x: 0, duration: 1 }, 4.9)
-      .to(seat, { y: 56, duration: 0.9, ease: "power2.in" }, 6.1)
-      .to(seat, { opacity: 0, duration: 0.5, ease: "sine.in" }, 6.5)
-      .to({}, { duration: 0.6 }, 7);
+      .to(moving, { x: 104, duration: 1.4 }, 0)
+      .to(lamp, { opacity: 0.2, duration: 0.4, yoyo: true, repeat: 3 }, 1.4)
+      .to(moving, { x: 0, duration: 1.4 }, 3.2)
+      .to({}, { duration: 0.8 }, 4.6);
 
     // Arranca después del dibujado inicial y se pausa fuera de pantalla
     let visible = false;
