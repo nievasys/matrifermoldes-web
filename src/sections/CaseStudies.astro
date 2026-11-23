@@ -107,6 +107,7 @@ const casos = [
               class={`aspect-square w-full ${caso.ajuste === "contain" ? "bg-white object-contain p-6" : "object-cover"}`}
               loading="lazy"
               decoding="async"
+              draggable="false"
             />
             <h3 class="t-sub3 mt-6 text-tone-fg">{caso.titulo}</h3>
             <p class="t-body mt-3 max-w-[18rem] text-tone-muted">{caso.resumen}</p>
@@ -155,7 +156,16 @@ const casos = [
   .cases-btn:hover:not(:disabled) {
     background-color: var(--line);
   }
-  /* Sin JS no hay vuelta infinita: se muestran solo los casos reales */
+  @media (pointer: fine) {
+    [data-cases-track] {
+      cursor: grab;
+    }
+    [data-cases-track][data-dragging] {
+      cursor: grabbing;
+      user-select: none;
+    }
+  }
+    /* Sin JS no hay vuelta infinita: se muestran solo los casos reales */
   :global(html:not(.js)) [data-cases-clone] {
     display: none;
   }
@@ -225,6 +235,34 @@ const casos = [
       },
       { passive: true },
     );
+
+    // Arrastre con el mouse (en touch el gesto ya es nativo). Durante el arrastre se
+    // apaga el snap y al soltar se acomoda a la tarjeta más cercana.
+    let arrastre: { x: number; left: number; id: number } | null = null;
+    track.addEventListener("pointerdown", (event) => {
+      if (event.pointerType !== "mouse" || event.button !== 0) return;
+      arrastre = { x: event.clientX, left: track.scrollLeft, id: event.pointerId };
+      track.setPointerCapture(event.pointerId);
+      track.style.scrollSnapType = "none";
+      track.style.scrollBehavior = "auto";
+      track.dataset.dragging = "";
+    });
+    track.addEventListener("pointermove", (event) => {
+      if (!arrastre || event.pointerId !== arrastre.id) return;
+      track.scrollLeft = arrastre.left - (event.clientX - arrastre.x);
+    });
+    const soltar = (event: PointerEvent) => {
+      if (!arrastre || event.pointerId !== arrastre.id) return;
+      arrastre = null;
+      track.releasePointerCapture(event.pointerId);
+      delete track.dataset.dragging;
+      const destino = Math.round(track.scrollLeft / paso()) * paso();
+      track.style.scrollBehavior = "";
+      track.scrollTo({ left: destino, behavior: reduce.matches ? "auto" : "smooth" });
+      window.setTimeout(() => (track.style.scrollSnapType = ""), reduce.matches ? 0 : 450);
+    };
+    track.addEventListener("pointerup", soltar);
+    track.addEventListener("pointercancel", soltar);
 
     prev.addEventListener("click", () => mover(-1));
     next.addEventListener("click", () => mover(1));
