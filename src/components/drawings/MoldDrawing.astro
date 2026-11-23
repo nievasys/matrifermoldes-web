@@ -278,11 +278,12 @@ const frontPins = pins.filter((p) => p.d[0] + p.d[1] > 0).sort((a, b) => depth(a
       {pin.shapes.map((s) => (s.tag === "polygon" ? <polygon points={s.points} class={s.cls} /> : <polyline points={s.points} class={s.cls} />))}
     </g>
   ))}
-  {body.map((s) => (s.tag === "polygon" ? <polygon points={s.points} class={s.cls} /> : <polyline points={s.points} class={s.cls} />))}
-  <polygon points={sprue} class="is-accent" />
+  {/* Las barras delanteras pasan por debajo de la placa, como en la foto */}
   {frontPins.map((pin) => (
     <g>
       {pin.shapes.map((s) => (s.tag === "polygon" ? <polygon points={s.points} class={s.cls} /> : <polyline points={s.points} class={s.cls} />))}
     </g>
   ))}
+  {body.map((s) => (s.tag === "polygon" ? <polygon points={s.points} class={s.cls} /> : <polyline points={s.points} class={s.cls} />))}
+  <polygon points={sprue} class="is-accent" />
 </svg>
