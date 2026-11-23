@@ -86,11 +86,18 @@ const casos = [
       role="region"
     >
       {
-        casos.map((caso, index) => (
+        // Tres tandas iguales: la del medio es la real; las de los costados son copias
+        // que permiten saltar sin que se note y dar la vuelta infinita.
+        [0, 1, 2].flatMap((tanda) =>
+          casos.map((caso, index) => ({ caso, index, copia: tanda !== 1 })),
+        ).map(({ caso, index, copia }) => (
           <article
             class="reveal w-[78vw] shrink-0 snap-start sm:w-[20.3125rem]"
             style={`--d:${index}`}
             data-cases-card
+            data-cases-clone={copia ? "" : undefined}
+            aria-hidden={copia ? "true" : undefined}
+            inert={copia ? true : undefined}
           >
             <img
               src={caso.imagen}
@@ -148,6 +155,10 @@ const casos = [
   .cases-btn:hover:not(:disabled) {
     background-color: var(--line);
   }
+  /* Sin JS no hay vuelta infinita: se muestran solo los casos reales */
+  :global(html:not(.js)) [data-cases-clone] {
+    display: none;
+  }
   .cases-btn:disabled {
     opacity: 0.4;
     cursor: default;
@@ -155,7 +166,9 @@ const casos = [
 </style>
 
 <script>
-  // Carrusel infinito: al pasar la última tarjeta vuelve a la primera, y al revés.
+  // Carrusel infinito: las tarjetas están en tres tandas iguales. Se navega sobre la
+  // del medio y, al terminar cada desplazamiento, si quedó en una copia se salta sin
+  // animación a la misma posición de la tanda real.
   const track = document.querySelector<HTMLElement>("[data-cases-track]");
   const prev = document.querySelector<HTMLButtonElement>("[data-cases-prev]");
   const next = document.querySelector<HTMLButtonElement>("[data-cases-next]");
@@ -163,44 +176,61 @@ const casos = [
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
 
   if (track && prev && next) {
-    const total = track.querySelectorAll("[data-cases-card]").length;
-    let actual = 1;
+    const total = track.querySelectorAll("[data-cases-card]:not([data-cases-clone])").length;
+    let actual = 0;
     const paso = () => {
       const card = track.querySelector<HTMLElement>("[data-cases-card]");
       const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
       return card ? card.offsetWidth + gap : track.clientWidth;
     };
-    const maximo = () => track.scrollWidth - track.clientWidth;
+    const tanda = () => paso() * total;
 
-    const actualizar = () => {
-      // Sin desborde no hay nada que recorrer: las flechas quedan inactivas.
-      const quieto = maximo() <= 1;
-      prev.disabled = quieto;
-      next.disabled = quieto;
-      const caso =
-        track.scrollLeft >= maximo() - 1
-          ? total
-          : Math.min(total, Math.round(track.scrollLeft / paso()) + 1);
+    const saltar = (left: number) => {
+      track.style.scrollBehavior = "auto";
+      track.style.scrollSnapType = "none";
+      track.scrollLeft = left;
+      track.style.scrollSnapType = "";
+      track.style.scrollBehavior = "";
+    };
+
+    const normalizar = () => {
+      const ancho = tanda();
+      if (track.scrollLeft < ancho * 0.5) saltar(track.scrollLeft + ancho);
+      else if (track.scrollLeft >= ancho * 1.5) saltar(track.scrollLeft - ancho);
+      anunciar();
+    };
+
+    const anunciar = () => {
+      const caso = (((Math.round(track.scrollLeft / paso()) % total) + total) % total) + 1;
       if (status && caso !== actual) {
         actual = caso;
         status.textContent = `Caso ${caso} de ${total}`;
       }
     };
 
-    const ir = (left: number) =>
-      track.scrollTo({ left, behavior: reduce.matches ? "auto" : "smooth" });
-
     const mover = (direccion: number) => {
-      const max = maximo();
-      if (direccion > 0 && track.scrollLeft >= max - 1) return ir(0);
-      if (direccion < 0 && track.scrollLeft <= 1) return ir(max);
-      ir(Math.min(max, Math.max(0, track.scrollLeft + direccion * paso())));
+      track.scrollBy({ left: direccion * paso(), behavior: reduce.matches ? "auto" : "smooth" });
+      if (reduce.matches) normalizar();
     };
+
+    // Fin de desplazamiento: una pausa corta sin eventos de scroll. scrollend no es
+    // confiable en contenedores con scroll-snap en todos los navegadores.
+    let espera: number | undefined;
+    track.addEventListener(
+      "scroll",
+      () => {
+        anunciar();
+        window.clearTimeout(espera);
+        espera = window.setTimeout(normalizar, 140);
+      },
+      { passive: true },
+    );
 
     prev.addEventListener("click", () => mover(-1));
     next.addEventListener("click", () => mover(1));
-    track.addEventListener("scroll", actualizar, { passive: true });
-    window.addEventListener("resize", actualizar);
-    actualizar();
+    window.addEventListener("resize", () => saltar(tanda() + (track.scrollLeft % tanda())));
+
+    saltar(tanda());
+    anunciar();
   }
 </script>
