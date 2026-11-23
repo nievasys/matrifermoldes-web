@@ -155,7 +155,7 @@ const casos = [
 </style>
 
 <script>
-  // Avanza o retrocede el carrusel de a una tarjeta y deshabilita los extremos.
+  // Carrusel infinito: al pasar la última tarjeta vuelve a la primera, y al revés.
   const track = document.querySelector<HTMLElement>("[data-cases-track]");
   const prev = document.querySelector<HTMLButtonElement>("[data-cases-prev]");
   const next = document.querySelector<HTMLButtonElement>("[data-cases-next]");
@@ -170,25 +170,31 @@ const casos = [
       const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
       return card ? card.offsetWidth + gap : track.clientWidth;
     };
+    const maximo = () => track.scrollWidth - track.clientWidth;
 
     const actualizar = () => {
-      const max = track.scrollWidth - track.clientWidth;
-      prev.disabled = track.scrollLeft <= 1;
-      next.disabled = track.scrollLeft >= max - 1;
-      const caso = next.disabled
-        ? total
-        : Math.min(total, Math.round(track.scrollLeft / paso()) + 1);
+      // Sin desborde no hay nada que recorrer: las flechas quedan inactivas.
+      const quieto = maximo() <= 1;
+      prev.disabled = quieto;
+      next.disabled = quieto;
+      const caso =
+        track.scrollLeft >= maximo() - 1
+          ? total
+          : Math.min(total, Math.round(track.scrollLeft / paso()) + 1);
       if (status && caso !== actual) {
         actual = caso;
         status.textContent = `Caso ${caso} de ${total}`;
       }
     };
 
+    const ir = (left: number) =>
+      track.scrollTo({ left, behavior: reduce.matches ? "auto" : "smooth" });
+
     const mover = (direccion: number) => {
-      track.scrollBy({
-        left: direccion * paso(),
-        behavior: reduce.matches ? "auto" : "smooth",
-      });
+      const max = maximo();
+      if (direccion > 0 && track.scrollLeft >= max - 1) return ir(0);
+      if (direccion < 0 && track.scrollLeft <= 1) return ir(max);
+      ir(Math.min(max, Math.max(0, track.scrollLeft + direccion * paso())));
     };
 
     prev.addEventListener("click", () => mover(-1));
