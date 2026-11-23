@@ -5,31 +5,58 @@ import SectionLabel from "@/components/SectionLabel.astro";
 
 const casos = [
   {
-    titulo: "Sillas Plásticas Inyectadas",
-    resumen:
-      "Recepción de matriz externa. Ajuste en planta, inyección de alto volumen y entrega de producto terminado listo para ensamble.",
-    imagen: "/noticiasillas.webp",
-    alt: "Sillas plásticas blancas apiladas en el depósito, listas para entregar",
-    ancho: 2250,
-    alto: 4000,
+    titulo: "Sillas infantiles",
+    resumen: "Asientos y respaldos de colores para sillas escolares.",
+    imagen: "/casos/sillas-infantiles.webp",
+    alt: "Cuatro sillas infantiles con asiento y respaldo plástico amarillo, rojo, verde y azul",
+    ancho: 500,
+    alto: 334,
+    ajuste: "contain",
   },
   {
-    titulo: "Carcasas ABS",
-    resumen:
-      "Proyecto en desarrollo. Inyección de carcasas en ABS con materiales técnicos y control dimensional.",
-    imagen: "/inyeccion.webp",
-    alt: "Inyectora de plástico modelo BS800-III en la planta",
-    ancho: 1838,
-    alto: 1870,
+    titulo: "Asientos en serie",
+    resumen: "Producción en serie de asientos inyectados en planta.",
+    imagen: "/casos/asientos-produccion.webp",
+    alt: "Asientos plásticos negros apilados en la planta después de la inyección",
+    ancho: 645,
+    alto: 900,
+    ajuste: "cover",
   },
   {
-    titulo: "Engranajes Nylon",
-    resumen:
-      "Proyecto en desarrollo. Engranajes técnicos en poliamida para aplicaciones de alta exigencia.",
-    imagen: "/inyeccion.webp",
-    alt: "Inyectora de plástico modelo BS800-III en la planta",
-    ancho: 1838,
-    alto: 1870,
+    titulo: "Bañera para bebé",
+    resumen: "Pieza de gran tamaño inyectada en una sola pieza.",
+    imagen: "/casos/banera-bebe.webp",
+    alt: "Bañera plástica blanca para bebé",
+    ancho: 500,
+    alto: 500,
+    ajuste: "contain",
+  },
+  {
+    titulo: "Curva sanitaria",
+    resumen: "Accesorio para cañerías de desagüe.",
+    imagen: "/casos/curva-sanitaria.webp",
+    alt: "Curva plástica blanca para cañería sanitaria",
+    ancho: 900,
+    alto: 900,
+    ajuste: "contain",
+  },
+  {
+    titulo: "Cojinete",
+    resumen: "Pieza técnica para instalaciones sanitarias.",
+    imagen: "/casos/cojinete.webp",
+    alt: "Cojinete plástico negro con bocas de conexión para caños",
+    ancho: 900,
+    alto: 900,
+    ajuste: "contain",
+  },
+  {
+    titulo: "Asientos para sillas",
+    resumen: "Asientos inyectados para sillas con estructura metálica.",
+    imagen: "/casos/asientos-sillas.webp",
+    alt: "Sillas apiladas con asientos plásticos naranja y azul sobre estructura metálica",
+    ancho: 554,
+    alto: 554,
+    ajuste: "cover",
   },
 ];
 ---
@@ -44,7 +71,7 @@ const casos = [
         <SectionLabel label="Casos de estudio" as="h2" />
       </div>
       <p class="t-sub1 reveal col-span-12 max-w-[48rem] lg:col-span-8 lg:col-start-5 lg:pl-10">
-        Tres proyectos de inyección resueltos en planta, del molde a la pieza terminada.
+        Proyectos de inyección resueltos en planta, del molde a la pieza terminada.
       </p>
     </div>
 
@@ -70,7 +97,7 @@ const casos = [
               alt={caso.alt}
               width={caso.ancho}
               height={caso.alto}
-              class="aspect-square w-full object-cover"
+              class={`aspect-square w-full ${caso.ajuste === "contain" ? "bg-white object-contain p-6" : "object-cover"}`}
               loading="lazy"
               decoding="async"
             />
