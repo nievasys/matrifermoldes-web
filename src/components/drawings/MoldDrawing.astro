@@ -12,7 +12,7 @@ const { class: className = "" } = Astro.props;
 type V = [number, number, number];
 type P2 = [number, number];
 type Shape = { tag: "polygon" | "polyline"; points: string; cls?: string };
-type Pin = { shapes: Shape[]; dx: string; dy: string };
+type Pin = { shapes: Shape[] };
 
 const OX = 378;
 const OY = 300;
@@ -41,7 +41,6 @@ const CB = L + R; // centro de curvatura de los codos, sobre la diagonal
 const BH = 34; // altura de los bloques de esquina
 const PIN_R = 12;
 const PIN_LEN = 150;
-const PULL = 30; // recorrido del tiro de noyos
 
 const quadrants: P2[] = [
   [-1, -1],
@@ -258,9 +257,7 @@ const makePin = ({ start, d }: { start: V; d: P2 }): Pin => {
   shapes.push(path(halfRing(along(start, d, PIN_LEN - 24), d, PIN_R)));
   shapes.push(path(halfRing(along(start, d, PIN_LEN - 30), d, PIN_R), "is-faint"));
   if (facing) shapes.push(poly(ringPts(along(start, d, PIN_LEN), d, PIN_R * 0.68, 20)));
-  const [x0, y0] = pr([0, 0, 0]);
-  const [x1, y1] = pr([d[0] * PULL, d[1] * PULL, 0]);
-  return { shapes, dx: (x1 - x0).toFixed(1), dy: (y1 - y0).toFixed(1) };
+  return { shapes };
 };
 const depth = ({ start, d }: { start: V; d: P2 }) => start[0] + start[1] + (d[0] + d[1]) * PIN_LEN;
 const backPins = pins.filter((p) => p.d[0] + p.d[1] < 0).sort((a, b) => depth(a) - depth(b)).map(makePin);
@@ -277,61 +274,15 @@ const frontPins = pins.filter((p) => p.d[0] + p.d[1] > 0).sort((a, b) => depth(a
 >
   {base.map((s) => (s.tag === "polygon" ? <polygon points={s.points} class={s.cls} /> : <polyline points={s.points} class={s.cls} />))}
   {backPins.map((pin) => (
-    <g data-mold-pin data-dx={pin.dx} data-dy={pin.dy}>
+    <g>
       {pin.shapes.map((s) => (s.tag === "polygon" ? <polygon points={s.points} class={s.cls} /> : <polyline points={s.points} class={s.cls} />))}
     </g>
   ))}
   {body.map((s) => (s.tag === "polygon" ? <polygon points={s.points} class={s.cls} /> : <polyline points={s.points} class={s.cls} />))}
   <polygon points={sprue} class="is-accent" />
   {frontPins.map((pin) => (
-    <g data-mold-pin data-dx={pin.dx} data-dy={pin.dy}>
+    <g>
       {pin.shapes.map((s) => (s.tag === "polygon" ? <polygon points={s.points} class={s.cls} /> : <polyline points={s.points} class={s.cls} />))}
     </g>
   ))}
 </svg>
-
-<script>
-  // Tiro de noyos: al entrar el dibujo, los ocho pernos laterales se retiran sobre su eje.
-  import { gsap } from "gsap";
-  import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-  gsap.registerPlugin(ScrollTrigger);
-
-  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const molds = Array.from(document.querySelectorAll<SVGSVGElement>("svg[data-mold]"));
-
-  if (!reduce && molds.length) {
-    const mm = gsap.matchMedia();
-    mm.add("(min-width: 768px)", () => {
-      const cleanups = molds.map((svg) => {
-        const pins = Array.from(svg.querySelectorAll<SVGGElement>("[data-mold-pin]"));
-        if (!pins.length) return () => {};
-        const timeline = gsap.timeline({ paused: true, delay: 1.6 });
-        pins.forEach((pin, i) => {
-          timeline.to(
-            pin,
-            {
-              x: Number(pin.dataset.dx),
-              y: Number(pin.dataset.dy),
-              duration: 1.6,
-              ease: "power3.inOut",
-            },
-            i * 0.06,
-          );
-        });
-        const trigger = ScrollTrigger.create({
-          trigger: svg,
-          start: "top 75%",
-          onEnter: () => timeline.restart(true),
-          onLeaveBack: () => timeline.pause(0),
-        });
-        return () => {
-          trigger.kill();
-          timeline.kill();
-          gsap.set(pins, { clearProps: "transform" });
-        };
-      });
-      return () => cleanups.forEach((cleanup) => cleanup());
-    });
-  }
-</script>
