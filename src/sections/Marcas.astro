@@ -1,0 +1,59 @@
+---
+// Marcas: calco de "Managing the supply chain" de la referencia. Título a la izquierda,
+// bajada a la derecha y los logos en gris dentro de la hoja de plano.
+import BlueprintGrid from "@/components/drawings/BlueprintGrid.astro";
+
+const marcas = [
+  { nombre: "Plastiferro", logo: "/marcas/plastiferro.webp", ancho: 202, alto: 21, clase: "h-5 lg:h-6" },
+  { nombre: "Amanco Wavin", logo: "/marcas/amanco-wavin.webp", ancho: 288, alto: 138, clase: "h-14 lg:h-16" },
+  {
+    nombre: "Industrias Saladillo",
+    logo: "/marcas/industrias-saladillo.webp",
+    ancho: 321,
+    alto: 204,
+    clase: "h-14 lg:h-16",
+  },
+  { nombre: "Concorplast", logo: "/marcas/concorplast.webp", ancho: 411, alto: 62, clase: "h-6 lg:h-8" },
+];
+---
+
+<section id="marcas" class="tone-light pb-16 pt-16 lg:pb-20 lg:pt-24" aria-labelledby="marcas-titulo">
+  <div class="shell">
+    <div class="grid grid-cols-12 gap-x-5 gap-y-8">
+      <h2 id="marcas-titulo" class="t-heading reveal col-span-12 lg:col-span-7">
+        Marcas que confían en nuestro trabajo
+      </h2>
+      <p class="t-body reveal col-span-12 max-w-[26rem] self-center text-tone-fg lg:col-span-4 lg:col-start-9" style="--d:1">
+        Inyectamos piezas y fabricamos moldes para empresas del rubro plástico y sanitario.
+      </p>
+    </div>
+
+    <BlueprintGrid class="mt-16">
+      <ul class="grid grid-cols-2 items-center justify-items-center gap-x-8 gap-y-12 px-6 py-14 lg:grid-cols-4 lg:px-16 lg:py-24">
+        {
+          marcas.map((marca, index) => (
+            <li class="reveal flex items-center justify-center" style={`--d:${index}`}>
+              <img
+                src={marca.logo}
+                alt={marca.nombre}
+                width={marca.ancho}
+                height={marca.alto}
+                class={`marca w-auto max-w-full object-contain ${marca.clase}`}
+                loading="lazy"
+                decoding="async"
+              />
+            </li>
+          ))
+        }
+      </ul>
+    </BlueprintGrid>
+  </div>
+</section>
+
+<style>
+  /* Logos en gris parejo, como en la referencia */
+  .marca {
+    filter: grayscale(1) contrast(1.15) brightness(0.55);
+    opacity: 0.8;
+  }
+</style>

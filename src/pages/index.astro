@@ -7,6 +7,7 @@ import Hero from '@/sections/Hero.astro';
 import About from '@/sections/About.astro';
 import Servicios from '@/sections/Servicios.astro';
 import CaseStudies from '@/sections/CaseStudies.astro';
+import Marcas from '@/sections/Marcas.astro';
 import WhyUs from '@/sections/WhyUs.astro';
 import Contact from '@/sections/Contact.astro';
 import Location from '@/sections/Location.astro';
@@ -66,6 +67,7 @@ const absolute = (path: string) => new URL(path, site).href;
 		<div data-takeover class="tone-dark">
 			<CaseStudies />
 		</div>
+		<Marcas />
 		<Location />
 		<Contact />
 	</main>
