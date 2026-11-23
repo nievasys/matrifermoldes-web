@@ -214,8 +214,8 @@ function initSmoothScroll() {
     lerp: 0.1,
     wheelMultiplier: 0.8,
     smoothWheel: true,
-    // Carrusel de casos y menú: scroll nativo.
-    prevent: (node) => Boolean(node.closest("[data-cases-track], #site-menu")),
+    // Menú: scroll nativo. El carrusel de casos deja nativo solo el gesto horizontal (data-lenis-prevent-horizontal).
+    prevent: (node) => Boolean(node.closest("#site-menu")),
   });
   window.lenis = lenis;
   lenis.on("scroll", ScrollTrigger.update);
